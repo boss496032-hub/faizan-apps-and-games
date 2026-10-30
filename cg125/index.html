@@ -1,0 +1,16 @@
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CG125 Shooter</title><style>body{margin:0;background:#000;color:#fff;font-family:Arial;text-align:center;overflow:hidden}canvas{border:2px solid red;margin-top:10px;max-width:95vw}button{padding:10px 20px;background:red;color:#fff;border:0;border-radius:8px;font-weight:bold}</style></head><body><h2>🏍️ CG 125 SHOOTER - Faizan Game</h2><canvas id="g" width="360" height="500"></canvas><br><br><button onclick="location.reload()">Restart</button><p>Touch / Click to Shoot</p><script>
+let c=document.getElementById('g'),x=c.getContext('2d'),pl={x:160,y:430},bul=[],en=[],score=0;
+c.addEventListener('click',e=>{let r=c.getBoundingClientRect();bul.push({x:pl.x+15,y:pl.y,vy:-8})});
+setInterval(()=>{en.push({x:Math.random()*320,y:-20,vy:2+Math.random()*2})},800);
+function loop(){
+x.fillStyle='#111';x.fillRect(0,0,360,500);
+x.fillStyle='red';x.fillRect(pl.x,pl.y,30,30);x.fillStyle='white';x.fillText('CG125',pl.x,pl.y-5);
+bul.forEach((b,i)=>{b.y+=b.vy;x.fillStyle='yellow';x.fillRect(b.x,b.y,4,10);if(b.y<0)bul.splice(i,1)});
+en.forEach((e,i)=>{e.y+=e.vy;x.fillStyle='#0f0';x.fillRect(e.x,e.y,30,30);
+bul.forEach((b,j)=>{if(b.x>e.x&&b.x<e.x+30&&b.y>e.y&&b.y<e.y+30){en.splice(i,1);bul.splice(j,1);score+=10}});
+if(e.y>500)en.splice(i,1);
+if(e.x>pl.x-30&&e.x<pl.x+30&&e.y>pl.y-30&&e.y<pl.y+30){alert('Game Over! Score: '+score);location.reload()}});
+x.fillStyle='white';x.fillText('Score: '+score,10,20);requestAnimationFrame(loop);
+}loop();
+document.addEventListener('touchmove',e=>{pl.x=e.touches[0].clientX-c.getBoundingClientRect().left-15});
+</script></body></html>
