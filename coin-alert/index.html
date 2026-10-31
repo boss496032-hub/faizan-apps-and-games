@@ -3,43 +3,60 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Faizan Coin Alert</title>
-<link rel="manifest" href="manifest.json">
 <style>
 body{margin:0;font-family:sans-serif;background:#0f172a;color:white}
 .header{padding:20px;background:linear-gradient(135deg,#f59e0b,#ef4444);text-align:center}
 .card{background:#1e293b;margin:12px;padding:15px;border-radius:12px;display:flex;align-items:center;gap:12px}
 .card img{width:40px;height:40px;border-radius:50%}
 .price{margin-left:auto;text-align:right}
-.btn{background:#22c55e;border:none;color:white;padding:12px;border-radius:8px;font-weight:bold;display:block;text-align:center;text-decoration:none;margin:10px}
+.btn{background:#22c55e;border:none;color:white;padding:14px;border-radius:10px;font-weight:bold;display:block;text-align:center;text-decoration:none;margin:10px;font-size:15px}
+.btn-blue{background:#3b82f6}
+.btn-orange{background:linear-gradient(135deg,#f59e0b,#ef4444)}
 </style>
 </head>
 <body>
 <div class="header">
 <h2>🚨 Faizan Coin Alert</h2>
 <p>Live New Coins Tracker</p>
-<a class="btn" href="#" id="installBtn" style="display:none;background:#3b82f6">📲 DOWNLOAD / INSTALL APP</a>
-<a class="btn" href="#" onclick="downloadCSV()">⬇️ DOWNLOAD COIN LIST (Excel)</a>
+
+<a class="btn btn-blue" href="#" onclick="installApp()">📲 APP INSTALL KARO (Mobile Me)</a>
+<a class="btn" href="#" onclick="downloadCSV()">⬇️ COIN LIST DOWNLOAD (Excel File)</a>
+<a class="btn btn-orange" href="#" onclick="shareApp()">📤 APP SHARE KARO</a>
+
+<p style="font-size:12px;margin-top:10px">Install: Chrome me 3 dots (⋮) > Install App / Add to Home Screen</p>
 </div>
-<div id="coins">Loading...</div>
+
+<div id="coins">Loading coins...</div>
+
 <script>
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e)=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBtn').style.display='block';});
-document.getElementById('installBtn').addEventListener('click', async()=>{if(deferredPrompt){deferredPrompt.prompt();}});
 let coinData=[];
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', e=>{e.preventDefault();deferredPrompt=e;});
+function installApp(){
+ if(deferredPrompt){deferredPrompt.prompt();}
+ else{alert('Upar 3 dots (⋮) par click karo > Install App / Add to Home Screen par click karo, app install ho jayegi!');}
+}
 async function loadCoins(){
- const res=await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1');
- coinData=await res.json();
- let html='';
- coinData.forEach(c=>{
-  html+=`<div class="card"><img src="${c.image}"><div><b>${c.name}</b> (${c.symbol.toUpperCase()})<br><small>$${c.current_price}</small></div><div class="price">${c.price_change_percentage_24h.toFixed(2)}%</div></div>`;
- });
- document.getElementById('coins').innerHTML=html;
+ try{
+  const res=await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=25&page=1');
+  coinData=await res.json();
+  let html='';
+  coinData.forEach(c=>{
+   html+=`<div class="card"><img src="${c.image}"><div><b>${c.name}</b> (${c.symbol.toUpperCase()})<br><small>$${c.current_price}</small></div><div class="price" style="color:${c.price_change_percentage_24h>0?'#22c55e':'#ef4444'}">${c.price_change_percentage_24h.toFixed(2)}%</div></div>`;
+  });
+  document.getElementById('coins').innerHTML=html;
+ }catch(e){document.getElementById('coins').innerHTML='Internet slow hai, reload karo';}
 }
 function downloadCSV(){
+ if(coinData.length==0){alert('Pehle coins load hone do');return;}
  let csv="Name,Symbol,Price,24h%\n";
  coinData.forEach(c=>{csv+=`${c.name},${c.symbol},${c.current_price},${c.price_change_percentage_24h}\n`;});
  let blob=new Blob([csv],{type:'text/csv'});
  let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='faizan-coins.csv';a.click();
+}
+function shareApp(){
+ if(navigator.share){navigator.share({title:'Faizan Coin Alert', url:window.location.href});}
+ else{alert('Link copy karo: '+window.location.href);}
 }
 loadCoins();
 </script>
