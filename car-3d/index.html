@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>EXTREME ULTIMATE 8K DRIFT</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}body{overflow:hidden;background:#000;font-family:Arial;touch-action:none}
+#menu{position:fixed;inset:0;background:radial-gradient(ellipse at center,#1a0033 0%,#000 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;z-index:999;padding:15px}
+#menu h1{background:linear-gradient(90deg,#ff0055,#ffaa00,#00ffaa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:30px;font-weight:900;text-shadow:0 0 30px #ff0055}
+.car-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;width:100%;max-width:380px}
+.car-card{background:linear-gradient(145deg,#1a1a2e,#0f0f1f);border-radius:18px;padding:14px;border:2px solid #222;text-align:center}
+.car-card.sel{border-color:#00ff88;box-shadow:0 0 25px #00ff88;transform:scale(1.05)}
+.btn{background:linear-gradient(135deg,#ff0055,#ff5500);color:white;padding:16px 45px;border-radius:30px;border:none;font-weight:900;font-size:19px;box-shadow:0 0 30px #ff0055}
+#ui{position:fixed;top:0;left:0;right:0;padding:10px;display:flex;justify-content:space-between;z-index:10;pointer-events:none;color:white}
+.uibox{background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);padding:7px 13px;border-radius:12px;border:1px solid rgba(255,255,255,0.2);font-weight:bold;font-size:12px}
+#nitroWrap{position:fixed;bottom:115px;left:50%;transform:translateX(-50%);width:260px;z-index:10;text-align:center}
+#nitroBar{height:14px;background:rgba(0,0,0,0.8);border-radius:20px;overflow:hidden;border:2px solid #00ff88;box-shadow:0 0 15px #00ff88}
+#nitroFill{height:100%;width:100%;background:linear-gradient(90deg,#00ff88,#00ffff);transition:0.1s}
+#controls{position:fixed;bottom:12px;width:100%;display:flex;justify-content:space-between;padding:0 12px;z-index:10}
+.ctrl{width:66px;height:66px;background:rgba(255,255,255,0.15);backdrop-filter:blur(10px);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;color:white;border:2px solid rgba(255,255,255,0.3)}
+.ctrl.active{background:rgba(0,255,136,0.4);box-shadow:0 0 20px #00ff88}
+#driftMsg{position:fixed;top:42%;left:50%;transform:translate(-50%,-50%);font-size:34px;font-weight:900;color:#fff;z-index:20;pointer-events:none;display:none;text-align:center;text-shadow:0 0 20px #ffaa00,0 4px 0 #000}
+</style>
+<script type="importmap">{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js"}}</script>
+</head>
+<body>
+<div id="menu">
+<h1>EXTREME ULTIMATE 8K</h1>
+<p style="font-size:11px;letter-spacing:3px;color:#888;margin-top:5px">RAY TRACING • HDR • NEON CITY</p>
+<div class="car-grid">
+<div class="car-card sel" onclick="pick(0,this)"><div style="font-size:34px">🏎️</div><b style="color:#ff0040">SUPRA MK5</b><br><span style="font-size:10px;color:#00ff88">1000HP | ★★★★★ DRIFT</span></div>
+<div class="car-card" onclick="pick(1,this)"><div style="font-size:34px">🚗</div><b style="color:#00ff88">CIVIC TYPE R</b><br><span style="font-size:10px;color:#00ff88">600HP | ★★★★ DRIFT</span></div>
+<div class="car-card" onclick="pick(2,this)"><div style="font-size:34px">🚙</div><b style="color:#0088ff">GTR R35</b><br><span style="font-size:10px;color:#00ff88">1200HP | GODZILLA</span></div>
+<div class="car-card" onclick="pick(3,this)"><div style="font-size:34px">🚓</div><b style="color:#ffaa00">AVENTADOR</b><br><span style="font-size:10px;color:#00ff88">1500HP | ★★★★★ SPEED</span></div>
+</div>
+<button class="btn" onclick="start()">🔥 PLAY EXTREME 8K</button>
+<a href="../" style="color:#666;margin-top:14px;display:block;text-decoration:none">🏠 Home</a>
+</div>
+<div id="ui"><div><div class="uibox">💎 <span id="coins">0</span> • 🏆 <span id="score">0</span></div><div class="uibox" style="margin-top:6px;color:#ffaa00">💨 <span id="drift">0°</span> <span id="pts" style="color:#00ff88">+0</span></div></div><div><div class="uibox" id="speed">0 KM/H</div><div class="uibox" style="margin-top:6px">LAP <span id="lap">1/3</span></div></div></div>
+<div id="nitroWrap"><div style="color:#00ff88;font-size:10px;font-weight:900;letter-spacing:2px">⚡ NITROUS ⚡</div><div id="nitroBar"><div id="nitroFill"></div></div></div>
+<div id="driftMsg"></div>
+<div id="controls"><div style="display:flex;gap:10px"><div class="ctrl" id="left">◀</div><div class="ctrl" id="right">▶</div></div><div style="display:flex;gap:10px;align-items:flex-end;flex-direction:column"><div class="ctrl" id="nitro" style="background:radial-gradient(circle,#00ff88,#008844)">⚡</div><div style="display:flex;gap:10px"><div class="ctrl" id="brake">💨</div><div class="ctrl" id="gas">🚀</div></div></div></div>
+<script type="module">
+import * as THREE from 'three';
+let sel=0; window.pick=(i,el)=>{sel=i;document.querySelectorAll('.car-card').forEach(c=>c.classList.remove('sel'));el.classList.add('sel');}
+let scene,camera,renderer,carGroup,coins=[],smokes=[],checks=[];
+let car={x:0,z:0,angle:0,speed:0,nitro:100,coins:0,score:0,drift:0,lap:1,check:0};
+let keys={}; const cols=[0xff0033,0x00ff99,0x0066ff,0xffaa00];
+window.start=()=>{document.getElementById('menu').style.display='none';init();}
+function init(){
+ scene=new THREE.Scene(); scene.fog=new THREE.FogExp2(0x050510,0.009);
+ camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000);
+ renderer=new THREE.WebGLRenderer({antialias:true}); renderer.setSize(innerWidth,innerHeight); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.3; renderer.outputColorSpace=THREE.SRGBColorSpace; document.body.appendChild(renderer.domElement);
+ // Sky HDR
+ let sky=new THREE.Mesh(new THREE.SphereGeometry(500,32,32), new THREE.ShaderMaterial({side:THREE.BackSide, uniforms:{t:{value:new THREE.Color(0x0a0a2e)},b:{value:new THREE.Color(0xff2200)}}, vertexShader:`varying vec3 p;void main(){p=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`, fragmentShader:`varying vec3 p;uniform vec3 t;uniform vec3 b;void main(){float h=normalize(p).y;gl_FragColor=vec4(mix(b,t,max(0.,h)),1.);}`})); scene.add(sky);
+ let sun=new THREE.DirectionalLight(0xffffff,3); sun.position.set(120,140,50); sun.castShadow=true; sun.shadow.mapSize.set(2048,2048); scene.add(sun); scene.add(new THREE.AmbientLight(0xffffff,0.5));
+ // Ground + Neon track
+ let g=new THREE.Mesh(new THREE.PlaneGeometry(800,800), new THREE.MeshStandardMaterial({color:0x0a0a12,metalness:0.3,roughness:0.7})); g.rotation.x=-Math.PI/2; g.receiveShadow=true; scene.add(g);
+ let neonMat=(c,i)=>new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:i});
+ let inner=new THREE.Mesh(new THREE.RingGeometry(48,50,64), neonMat(0x00ff88,2)); inner.rotation.x=-Math.PI/2; inner.position.y=0.06; scene.add(inner);
+ let outer=new THREE.Mesh(new THREE.RingGeometry(118,121,64), neonMat(0xff0055,2)); outer.rotation.x=-Math.PI/2; outer.position.y=0.06; scene.add(outer);
+ // City lights poles
+ for(let i=0;i<20;i++){let a=i*Math.PI/10; let pole=new THREE.Mesh(new THREE.CylinderGeometry(0.2,0.3,14,8), new THREE.MeshStandardMaterial({color:0x222222})); pole.position.set(Math.cos(a)*135,7,Math.sin(a)*135); pole.castShadow=true; scene.add(pole); let pl=new THREE.PointLight(0xffaa00,50,60); pl.position.set(Math.cos(a)*135,14,Math.sin(a)*135); scene.add(pl);}
+ // Checkpoints
+ for(let i=0;i<4;i++){let ang=i*Math.PI/2; checks.push({x:Math.cos(ang)*84,z:Math.sin(ang)*84}); let gate=new THREE.Group(); let b=new THREE.Mesh(new THREE.BoxGeometry(1,12,1), neonMat(i==0?0x00ff88:0x333333,0.8)); b.position.set(-4,6,0); let b2=b.clone(); b2.position.set(4,6,0); let top=new THREE.Mesh(new THREE.BoxGeometry(10,1,1), neonMat(i==0?0x00ff88:0x333333,0.8)); top.position.set(0,12,0); gate.add(b,b2,top); gate.position.set(Math.cos(ang)*84,0,Math.sin(ang)*84); gate.lookAt(0,0,0); scene.add(gate);}
+ // Coins ultra
+ for(let i=0;i<20;i++){let a=Math.random()*Math.PI*2; let r=62+Math.random()*40; let grp=new THREE.Group(); let core=new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.5,0.5,20), new THREE.MeshPhysicalMaterial({color:0xffd700,metalness:0.9,roughness:0.1,emissive:0xffaa00,emissiveIntensity:0.8})); let halo=new THREE.Mesh(new THREE.RingGeometry(2,2.6,20), new THREE.MeshBasicMaterial({color:0xffd700,transparent:true,opacity:0.5,side:THREE.DoubleSide})); halo.rotation.x=Math.PI/2; grp.add(core,halo); grp.position.set(Math.cos(a)*r,2,Math.sin(a)*r); grp.userData.baseY=2; scene.add(grp); coins.push(grp);}
+ // EXTREME CAR
+ carGroup=new THREE.Group();
+ let mat=new THREE.MeshPhysicalMaterial({color:cols[sel],metalness:0.9,roughness:0.15,clearcoat:1,clearcoatRoughness:0.05,emissive:cols[sel],emissiveIntensity:0.08});
+ let body=new THREE.Mesh(new THREE.BoxGeometry(4.8,1.2,2.3), mat); body.position.y=1.1; body.castShadow=true; carGroup.add(body);
+ let cab=new THREE.Mesh(new THREE.BoxGeometry(2.5,0.9,1.9), new THREE.MeshPhysicalMaterial({color:0x050505,metalness:0.1,roughness:0.05,transmission:0.3})); cab.position.set(-0.2,2.05,0); carGroup.add(cab);
+ // Lights
+ let hlMat=new THREE.MeshStandardMaterial({color:0xffffff,emissive:0xffffff,emissiveIntensity:4}); [[2.35,1,0.75],[2.35,1,-0.75]].forEach(p=>{let hl=new THREE.Mesh(new THREE.SphereGeometry(0.28,10,10), hlMat); hl.position.set(p[0],p[1],p[2]); carGroup.add(hl);});
+ let tlMat=new THREE.MeshStandardMaterial({color:0xff0000,emissive:0xff0000,emissiveIntensity:3}); [[-2.35,1,0.85],[-2.35,1,-0.85]].forEach(p=>{let tl=new THREE.Mesh(new THREE.BoxGeometry(0.2,0.35,0.5), tlMat); tl.position.set(p[0],p[1],p[2]); carGroup.add(tl);});
+ // Wheels
+ [[1.8,0.5,1.1],[1.8,0.5,-1.1],[-1.8,0.5,1.1],[-1.8,0.5,-1.1]].forEach((p,i)=>{let wg=new THREE.Group(); let tire=new THREE.Mesh(new THREE.CylinderGeometry(0.62,0.62,0.6,20), new THREE.MeshStandardMaterial({color:0x080808,roughness:0.9})); tire.rotation.z=Math.PI/2; let rim=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.4,0.65,14), new THREE.MeshStandardMaterial({color:i<2?0xeeeeee:0xffaa00,metalness:0.95,roughness:0.1})); rim.rotation.z=Math.PI/2; wg.add(tire,rim); wg.position.set(p[0],p[1],p[2]); carGroup.add(wg);});
+ scene.add(carGroup);
+ // controls
+ let bind=(id,k)=>{let el=document.getElementById(id); let set=v=>e=>{e.preventDefault();keys[k]=v;el.classList.toggle('active',v)}; el.addEventListener('touchstart',set(true),{passive:false}); el.addEventListener('touchend',set(false),{passive:false}); el.addEventListener('mousedown',set(true)); el.addEventListener('mouseup',set(false));};
+ bind('left','left'); bind('right','right'); bind('gas','gas'); bind('brake','brake'); bind('nitro','nitro');
+ addEventListener('keydown',e=>{if(e.key=='ArrowLeft')keys.left=true; if(e.key=='ArrowRight')keys.right=true; if(e.key=='ArrowUp')keys.gas=true; if(e.key=='ArrowDown'||e.code=='Space')keys.brake=true; if(e.key=='Shift')keys.nitro=true;});
+ addEventListener('keyup',e=>{if(e.key=='ArrowLeft')keys.left=false; if(e.key=='ArrowRight')keys.right=false; if(e.key=='ArrowUp')keys.gas=false; if(e.key=='ArrowDown'||e.code=='Space')keys.brake=false; if(e.key=='Shift')keys.nitro=false;});
+ animate();
+}
+function smoke(){
+ if(Math.abs(car.speed)<1) return;
+ let drift=keys.brake && (keys.left||keys.right) && Math.abs(car.speed)>1.3;
+ let nitro=keys.nitro && keys.gas && car.nitro>0;
+ if(!drift && !nitro) return;
+ let cnt=drift?5:3;
+ for(let i=0;i<cnt;i++){let geo=new THREE.SphereGeometry(0.25+Math.random()*0.5,6,6); let mat=new THREE.MeshStandardMaterial({color:drift?0xffffff:0x66aaff,transparent:true,opacity:0.75,emissive:drift?0x222222:0x0044ff,emissiveIntensity:0.4}); let p=new THREE.Mesh(geo,mat); p.position.set(car.x+(Math.random()-0.5)*1.2,0.5,car.z+(Math.random()-0.5)*1.2); p.userData={life:1, vy:0.4+Math.random()*0.7, vx:(Math.random()-0.5)*0.4, vz:(Math.random()-0.5)*0.4}; scene.add(p); smokes.push(p);}
+}
+function update(){
+ let max=[6.8,5.8,6.2,7.2][sel]; let turnP=[1.3,1,0.85,1.2][sel];
+ let turn=0.048*(Math.abs(car.speed)/2+0.9)*turnP; if(keys.left) car.angle+=turn; if(keys.right) car.angle-=turn;
+ if(keys.nitro && car.nitro>0 && keys.gas){car.speed+=0.25; car.nitro-=1.2; if(car.nitro<0) car.nitro=0;}
+ else if(keys.gas){car.speed+=0.11; if(car.speed>max) car.speed=max;}
+ else if(keys.brake){car.speed-=0.2; if(car.speed<-2.8) car.speed=-2.8; if(Math.abs(car.speed)>1.2 && (keys.left||keys.right)){let add=Math.floor(Math.abs(car.speed)*5); car.score+=add; car.drift+=add*0.7; if(add>14) show(add>22?'🔥 GODLIKE DRIFT! 🔥':add>16?'⚡ EXTREME DRIFT! ⚡':'💨 ULTRA DRIFT!');}}
+ else car.speed*=0.97;
+ if(car.nitro<100 && !keys.nitro) car.nitro+=0.2;
+ car.x+=Math.sin(car.angle)*car.speed; car.z+=Math.cos(car.angle)*car.speed;
+ coins.forEach((g,i)=>{ g.rotation.y+=0.07; g.position.y=g.userData.baseY+Math.sin(Date.now()*0.004+i)*0.5; if(Math.hypot(car.x-g.position.x,car.z-g.position.z)<3.5){ scene.remove(g); coins.splice(i,1); car.coins++; car.score+=80; car.nitro=Math.min(100,car.nitro+22); let a=Math.random()*Math.PI*2; let r=62+Math.random()*40; let ng=new THREE.Group(); let core=new THREE.Mesh(new THREE.CylinderGeometry(1.5,1.5,0.5,20), new THREE.MeshPhysicalMaterial({color:0xffd700,metalness:0.9,roughness:0.1,emissive:0xffaa00,emissiveIntensity:0.8})); let halo=new THREE.Mesh(new THREE.RingGeometry(2,2.6,20), new THREE.MeshBasicMaterial({color:0xffd700,transparent:true,opacity:0.5,side:THREE.DoubleSide})); halo.rotation.x=Math.PI/2; ng.add(core,halo); ng.position.set(Math.cos(a)*r,2,Math.sin(a)*r); ng.userData.baseY=2; scene.add(ng); coins.push(ng);} });
+ let cur=checks[car.check]; if(cur && Math.hypot(car.x-cur.x,car.z-cur.z)<15){car.check++; if(car.check>=4){car.check=0; car.lap++; if(car.lap>3){car.lap=1; car.score+=1000; show('🏁 LAP +1000 🏁');}} }
+ let d=Math.hypot(car.x,car.z); if(d>155 || d<30){car.x*=0.9; car.z*=0.9; car.speed*=0.5;}
+ carGroup.position.set(car.x,0,car.z); carGroup.rotation.y=car.angle; carGroup.rotation.z=(keys.left?-0.1:keys.right?0.1:0)*Math.abs(car.speed)*0.2;
+ let camD=19+Math.abs(car.speed)*1.2; camera.position.x=car.x-Math.sin(car.angle)*camD; camera.position.z=car.z-Math.cos(car.angle)*camD; camera.position.y=9.5+Math.abs(car.speed)*0.6; camera.lookAt(car.x,1,car.z);
+ document.getElementById('score').innerText=car.score; document.getElementById('coins').innerText=car.coins; document.getElementById('drift').innerText=Math.floor(car.drift%360)+'°'; document.getElementById('pts').innerText='+'+Math.floor(car.drift); document.getElementById('lap').innerText=car.lap+'/3'; document.getElementById('speed').innerText=Math.floor(Math.abs(car.speed*32))+' KM/H'; document.getElementById('nitroFill').style.width=car.nitro+'%'; car.drift*=0.992;
+}
+function show(t){let el=document.getElementById('driftMsg'); el.innerText=t; el.style.display='block'; el.animate([{transform:'translate(-50%,-50%) scale(0)',opacity:0},{transform:'translate(-50%,-50%) scale(1.4)',opacity:1},{transform:'translate(-50%,-50%) scale(1)',opacity:0}],{duration:1300}); setTimeout(()=>el.style.display='none',1300);}
+function animate(){requestAnimationFrame(animate); if(carGroup){ if(Math.random()<0.95) smoke(); for(let i=smokes.length-1;i>=0;i--){let p=smokes[i]; p.position.x+=p.userData.vx; p.position.y+=p.userData.vy; p.position.z+=p.userData.vz; p.userData.life-=0.014; p.material.opacity=p.userData.life*0.7; p.scale.multiplyScalar(1.028); if(p.userData.life<=0){scene.remove(p); smokes.splice(i,1);} } update();} renderer.render(scene,camera);}
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight);});
+</script>
+</body>
+</html>
