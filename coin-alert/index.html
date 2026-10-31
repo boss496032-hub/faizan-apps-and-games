@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Faizan Coin Alert - New Coin Tracker</title>
+<style>
+body{margin:0;font-family:sans-serif;background:#0f172a;color:white}
+.header{padding:20px;background:linear-gradient(135deg,#f59e0b,#ef4444);text-align:center}
+.card{background:#1e293b;margin:12px;padding:15px;border-radius:12px;display:flex;align-items:center;gap:12px}
+.card img{width:40px;height:40px;border-radius:50%}
+.price{margin-left:auto;text-align:right}
+.new{color:#22c55e;font-weight:bold;font-size:12px}
+button{background:#22c55e;border:none;color:white;padding:10px 15px;border-radius:8px;font-weight:bold;width:100%}
+</style>
+</head>
+<body>
+<div class="header">
+<h2>🚨 Faizan Coin Alert</h2>
+<p>Live New Coins + Price Alert</p>
+<button onclick="enableAlert()">🔔 Enable Alert Sound</button>
+</div>
+
+<div id="coins">Loading new coins...</div>
+
+<script>
+let oldCoins = [];
+async function loadCoins(){
+  try{
+    const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1');
+    const data = await res.json();
+    let html = '';
+    data.forEach(c=>{
+      let isNew = !oldCoins.includes(c.id) && oldCoins.length>0;
+      html += `<div class="card" style="${isNew?'border:2px solid #22c55e':''}">
+        <img src="${c.image}">
+        <div><b>${c.name} (${c.symbol.toUpperCase()})</b><br><small>$${c.current_price} | MarketCap: $${(c.market_cap/1000000).toFixed(1)}M</small>
+        ${isNew?'<div class=new>🔥 NEW LISTED!</div>':''}</div>
+        <div class="price"><b style="color:${c.price_change_percentage_24h>0?'#22c55e':'#ef4444'}">${c.price_change_percentage_24h.toFixed(2)}%</b><br><small>24h</small></div>
+      </div>`;
+      if(isNew && Notification.permission==='granted'){
+        new Notification(`NEW COIN: ${c.name}`, {body:`Price $${c.current_price} - Check Now!`});
+        let audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+        audio.play();
+      }
+    });
+    document.getElementById('coins').innerHTML = html;
+    if(oldCoins.length==0) oldCoins = data.map(x=>x.id);
+  }catch(e){document.getElementById('coins').innerHTML='Error loading - try again';}
+}
+function enableAlert(){
+  Notification.requestPermission();
+  alert('Alert ON! Jab naya coin ayega, sound + notification ayega!');
+}
+loadCoins();
+setInterval(loadCoins, 60000);
+</script>
+</body>
+</html>
