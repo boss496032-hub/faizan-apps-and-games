@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Faizan Drift Pro</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:sans-serif;background:#0f172a;color:white;overflow:hidden}
+#menu{padding:20px;text-align:center;min-height:100vh;background:linear-gradient(135deg,#0f172a,#1e1b4b)}
+h1{color:#f59e0b;margin:15px 0}
+.cars{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.car-card{background:#1e293b;border-radius:16px;padding:15px;border:2px solid transparent;cursor:pointer}
+.car-card.selected{border-color:#22c55e;background:#14532d}
+.car-img{font-size:40px}
+.btn{background:#22c55e;color:white;padding:14px 30px;border-radius:12px;border:none;font-weight:bold;font-size:16px;margin-top:20px;width:100%;display:inline-block;text-decoration:none}
+canvas{display:none;background:#1a1a1a}
+#ui{position:fixed;top:10px;left:10px;display:none;color:white;font-weight:bold;background:rgba(0,0,0,0.5);padding:10px;border-radius:10px}
+#controls{position:fixed;bottom:20px;width:100%;display:none;justify-content:space-between;padding:0 15px;box-sizing:border-box}
+.ctrl{width:65px;height:65px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;border:1px solid rgba(255,255,255,0.2)}
+</style>
+</head>
+<body>
+<div id="menu">
+<h1>🏎️ FAIZAN DRIFT PRO</h1>
+<p>Apni Car Select Karo</p>
+<div class="cars">
+<div class="car-card selected" onclick="selectCar(this,0)"><div class="car-img">🚗</div><b>Civic X</b><br><small>Speed: ★★★★</small></div>
+<div class="car-card" onclick="selectCar(this,1)"><div class="car-img">🏎️</div><b>Supra MK4</b><br><small>Speed: ★★★★★</small></div>
+<div class="car-card" onclick="selectCar(this,2)"><div class="car-img">🚙</div><b>Mehran Turbo</b><br><small>Speed: ★★</small></div>
+<div class="car-card" onclick="selectCar(this,3)"><div class="car-img">🚓</div><b>GTR R35</b><br><small>Speed: ★★★★★</small></div>
+</div>
+<button class="btn" onclick="startGame()">🏁 RACE START KARO</button>
+<a class="btn" style="background:#3b82f6;margin-top:10px" href="../">🏠 HOME WAPAS</a>
+</div>
+<div id="ui">SCORE: <span id="score">0</span> | SPEED: <span id="speed">0</span><br>NITRO: <span id="nitro">100%</span></div>
+<canvas id="game"></canvas>
+<div id="controls"><div style="display:flex;gap:12px"><div class="ctrl" id="left">◀</div><div class="ctrl" id="right">▶</div></div><div style="display:flex;gap:12px"><div class="ctrl" id="brake">💨</div><div class="ctrl" id="gas">🚀</div></div></div>
+<script>
+let selected=0;let carTypes=[{color:'#ef4444',speed:5.5},{color:'#f59e0b',speed:6.5},{color:'#22c55e',speed:4},{color:'#3b82f6',speed:6.8}];
+function selectCar(el,idx){document.querySelectorAll('.car-card').forEach(c=>c.classList.remove('selected'));el.classList.add('selected');selected=idx;}
+const canvas=document.getElementById('game');const ctx=canvas.getContext('2d');let car,score=0,nitro=100,keysDown={},particles=[],skidMarks=[];
+function startGame(){document.getElementById('menu').style.display='none';canvas.style.display='block';document.getElementById('ui').style.display='block';document.getElementById('controls').style.display='flex';canvas.width=window.innerWidth;canvas.height=window.innerHeight;car={x:canvas.width/2,y:canvas.height/2,angle:0,speed:0,type:carTypes[selected]};loop();}
+function drawTrack(){ctx.fillStyle='#2b2b2b';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#1a2e1a';ctx.fillRect(0,0,canvas.width,30);ctx.fillRect(0,canvas.height-110,canvas.width,110);ctx.strokeStyle='#f59e0b';ctx.lineWidth=6;ctx.strokeRect(15,15,canvas.width-30,canvas.height-130);skidMarks.forEach(s=>{ctx.strokeStyle=`rgba(20,20,20,${s.life/100})`;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(s.x1,s.y1);ctx.lineTo(s.x2,s.y2);ctx.stroke();s.life-=0.5;});skidMarks=skidMarks.filter(s=>s.life>0);ctx.strokeStyle='white';ctx.setLineDash([25,25]);ctx.lineWidth=3;ctx.strokeRect(50,50,canvas.width-100,canvas.height-190);ctx.setLineDash([]);}
+function drawCar(){ctx.save();ctx.translate(car.x,car.y);ctx.rotate(car.angle);ctx.fillStyle='rgba(0,0,0,0.4)';ctx.beginPath();ctx.ellipse(2,2,22,12,0,0,Math.PI*2);ctx.fill();ctx.fillStyle=car.type.color;ctx.fillRect(-24,-12,48,24);ctx.fillStyle='rgba(0,0,0,0.3)';ctx.fillRect(-24,-12,48,8);ctx.fillStyle='#111';ctx.fillRect(12,-10,14,20);ctx.fillStyle='#000';ctx.fillRect(-22,-14,10,5);ctx.fillRect(-22,9,10,5);ctx.fillRect(16,-14,10,5);ctx.fillRect(16,9,10,5);if(keysDown.gas&&nitro>0){ctx.fillStyle='#f59e0b';ctx.beginPath();ctx.moveTo(-24,-4);ctx.lineTo(-35,0);ctx.lineTo(-24,4);ctx.fill();}ctx.restore();}
+function update(){let turnSpeed=0.06*(car.speed/3+1);if(keysDown.left)car.angle-=turnSpeed;if(keysDown.right)car.angle+=turnSpeed;if(keysDown.gas){car.speed+=0.25;if(nitro>0){car.speed+=0.15;nitro-=0.4;}}else if(keysDown.brake){car.speed-=0.4;if(Math.abs(car.speed)>1){skidMarks.push({x1:car.x+Math.cos(car.angle+0.5)*15,y1:car.y+Math.sin(car.angle+0.5)*15,x2:car.x+Math.cos(car.angle-0.5)*15,y2:car.y+Math.sin(car.angle-0.5)*15,life:100});particles.push({x:car.x,y:car.y,vx:(Math.random()-0.5)*4,vy:(Math.random()-0.5)*4,life:25});score+=5;}}else car.speed*=0.97;car.speed=Math.max(-3,Math.min(car.type.speed,car.speed));if(keysDown.gas&&Math.abs(car.speed)>2&&(keysDown.left||keysDown.right))score+=8;car.x+=Math.cos(car.angle)*car.speed;car.y+=Math.sin(car.angle)*car.speed;if(car.x<25||car.x>canvas.width-25||car.y<25||car.y>canvas.height-120){car.x=canvas.width/2;car.y=canvas.height/2;car.speed=0;score=Math.max(0,score-200);}document.getElementById('score').innerText=score;document.getElementById('speed').innerText=Math.floor(Math.abs(car.speed*20));document.getElementById('nitro').innerText=Math.floor(nitro)+'%';if(nitro<100&&!keysDown.gas)nitro+=0.2;}
+function loop(){drawTrack();particles.forEach((p,i)=>{ctx.fillStyle=`rgba(255,255,255,${p.life/25})`;ctx.beginPath();ctx.arc(p.x,p.y,4,0,Math.PI*2);ctx.fill();p.x+=p.vx;p.y+=p.vy;p.life--;if(p.life<=0)particles.splice(i,1);});drawCar();update();requestAnimationFrame(loop);}
+function bind(id,key){let el=document.getElementById(id);let set=(v)=>(e)=>{e.preventDefault();keysDown[key]=v};el.addEventListener('touchstart',set(true));el.addEventListener('touchend',set(false));el.addEventListener('mousedown',set(true));el.addEventListener('mouseup',set(false));}
+bind('left','left');bind('right','right');bind('gas','gas');bind('brake','brake');
+</script>
+</body>
+</html>
