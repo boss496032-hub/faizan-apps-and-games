@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>G-Wagon PRO - Open World Driving</title>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4158618600102650" crossorigin="anonymous"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0f1e;color:#fff;font-family:Arial;overflow:hidden}
+header{background:#111827;padding:10px 15px;display:flex;justify-content:space-between;border-bottom:2px solid #00d9ff}
+.logo{color:#00d9ff;font-weight:900}
+a{color:#8aff6b;text-decoration:none;font-size:12px}
+.wrap{position:relative;width:100%;height:calc(100vh - 48px);max-width:900px;margin:0 auto;background:linear-gradient(#87ceeb 0%, #e0f6ff 30%, #6b7280 30.1%, #4b5563 100%)}
+canvas{width:100%;height:100%;display:block}
+.ui{position:absolute;top:8px;left:8px;right:8px;display:flex;justify-content:space-between;z-index:10}
+.box{background:rgba(0,0,0,0.85);padding:7px 10px;border-radius:8px;border:1px solid #00d9ff;font-size:11px}
+.controls{position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:space-between;padding:0 10px;z-index:10;gap:8px}
+.leftCtrl{display:flex;gap:8px}
+.btn{background:rgba(0,0,0,0.7);border:2px solid #00d9ff;color:#fff;width:55px;height:55px;border-radius:50%;font-weight:900;font-size:18px}
+.btn.action{background:rgba(0,217,255,0.9);width:auto;padding:0 18px;border-radius:12px;font-size:12px}
+.btn.door{background:rgba(255,165,0,0.9);border-color:#ffa500}
+#start{position:absolute;inset:0;background:rgba(7,10,20,0.97);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;text-align:center;padding:20px}
+.g-img{width:100%;max-width:360px;border-radius:12px;border:2px solid #00d9ff;box-shadow:0 0 25px rgba(0,217,255,0.5)}
+</style>
+</head>
+<body>
+<header><div class="logo">🚙 G-WAGON PRO</div><div><a href="../">Home</a> | <a href="../cg125/">CG125</a> | <a href="../train/">Train</a></div></header>
+<div class="wrap">
+<div class="ui"><div class="box">🏁 KM: <span id="km">0</span></div><div class="box">⛽ <span id="fuel">100</span>%</div><div class="box">💨 <span id="sp">0</span> KM/H</div></div>
+<canvas id="game"></canvas>
+<div class="controls">
+<div class="leftCtrl"><button class="btn" id="left">◀</button><button class="btn" id="right">▶</button></div>
+<div class="leftCtrl"><button class="btn door" id="doorBtn">🚪</button><button class="btn action" id="hornBtn">📯 HORN</button></div>
+</div>
+<div id="start">
+<img src="https://images.unsplash.com/photo-1520050206274-a1ae44613e6d?w=600" class="g-img" style="display:none" id="thumb">
+<div style="font-size:70px;">🚙</div>
+<h1 style="color:#00d9ff;margin:10px 0;">G-WAGON OPEN WORLD</h1>
+<p style="color:#94a3b8;font-size:12px;">Ultimate Car Driving in Open City<br>Door Open/Close, Get In/Out, Free Roam!</p>
+<button onclick="startGame()" style="background:#00d9ff;color:#000;border:none;padding:14px 40px;border-radius:12px;font-weight:900;font-size:18px;margin-top:15px;">▶ DRIVE NOW</button>
+<p style="color:#64748b;font-size:10px;margin-top:10px;">Like Google Play - Car Simulator | Faizan Games 🇵🇰</p>
+</div>
+</div>
+<script>
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
+let W,H,running=false,speed=0,km=0,fuel=100,doorOpen=false,playerOutside=false;
+let car={x:0,y:0,w:110,h:55,angle:0},worldX=0,buildings=[],roadMark=0;
+function resize(){W=canvas.width=canvas.offsetWidth*2;H=canvas.height=canvas.offsetHeight*2;car.x=W/2;car.y=H*0.65;}
+window.addEventListener('resize',resize);resize();
+let left=false,right=false,acc=false;
+document.getElementById('left').addEventListener('touchstart',()=>left=true);document.getElementById('left').addEventListener('touchend',()=>left=false);
+document.getElementById('right').addEventListener('touchstart',()=>right=true);document.getElementById('right').addEventListener('touchend',()=>right=false);
+canvas.addEventListener('touchstart',()=>acc=true);canvas.addEventListener('touchend',()=>acc=false);
+document.getElementById('doorBtn').addEventListener('click',()=>{doorOpen=!doorOpen;playerOutside=doorOpen;});
+document.getElementById('hornBtn').addEventListener('click',()=>{ctx.fillStyle='#facc15';});
+window.addEventListener('keydown',e=>{if(e.key==='ArrowLeft')left=true;if(e.key==='ArrowRight')right=true;if(e.key==='ArrowUp'||e.key===' ')acc=true;if(e.key==='d')doorOpen=!doorOpen;});
+window.addEventListener('keyup',e=>{if(e.key==='ArrowLeft')left=false;if(e.key==='ArrowRight')right=false;if(e.key==='ArrowUp'||e.key===' ')acc=false;});
+// Buildings
+for(let i=0;i<25;i++){buildings.push({x:(i*350-5000),w:120+Math.random()*100,h:180+Math.random()*200,color:`hsl(${200+Math.random()*40},30%,${50+Math.random()*20}%)`});}
+function startGame(){document.getElementById('start').style.display='none';running=true;km=0;fuel=100;speed=0;worldX=0;loop();}
+function loop(){
+if(!running)return;
+if(acc){speed=Math.min(9,speed+0.18);}else{speed=Math.max(0,speed-0.12);}
+if(left)car.x-=speed*2.2+2;if(right)car.x+=speed*2.2+2;
+car.x=Math.max(80,Math.min(W-80,car.x));
+worldX+=speed*4;roadMark+=speed*5;km+=speed*0.015;fuel-=speed*0.008;if(fuel<=0){fuel=0;speed*=0.98;}
+ctx.clearRect(0,0,W,H);
+// Sky
+let skyGrad=ctx.createLinearGradient(0,0,0,H*0.38);skyGrad.addColorStop(0,'#38bdf8');skyGrad.addColorStop(1,'#e0f2fe');ctx.fillStyle=skyGrad;ctx.fillRect(0,0,W,H*0.38);
+// Buildings
+for(let b of buildings){let bx=b.x+worldX*0.3;if(bx<-200||bx>W+200)continue;ctx.fillStyle=b.color;ctx.fillRect(bx,H*0.38-b.h,b.w,b.h);ctx.fillStyle='rgba(0,0,0,0.3)';for(let wy=0;wy<b.h;wy+=25){for(let wx=0;wx<b.w;wx+=20){if(Math.random()>0.6){ctx.fillStyle='rgba(255,255,150,0.8)';ctx.fillRect(bx+wx,H*0.38-b.h+wy+5,8,12);}}}}
+// Road
+ctx.fillStyle='#374151';ctx.fillRect(0,H*0.38,W,H*0.62);
+ctx.fillStyle='#fbbf24';for(let i=0;i<20;i++){let mx=(i*160 - roadMark%160);ctx.fillRect(mx,H*0.38+ H*0.25,70,6);}
+// Sidewalks
+ctx.fillStyle='#6b7280';ctx.fillRect(0,H*0.38,W,18);ctx.fillRect(0,H*0.88,W, H*0.12);
+// Car - G-WAGON Style (Black)
+let cx=car.x,cy=car.y;
+ctx.save();ctx.translate(cx,cy);ctx.shadowColor='rgba(0,0,0,0.5)';ctx.shadowBlur=20;ctx.shadowOffsetY=15;
+// Body
+ctx.fillStyle='#111827';ctx.fillRect(-55,-28,110,46);
+ctx.fillStyle='#1f2937';ctx.fillRect(-50,-40,90,18);
+ctx.fillStyle='#030712';ctx.fillRect(35,-30,18,40);
+// Wheels
+ctx.fillStyle='#000';ctx.beginPath();ctx.arc(-35,18,16,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(35,18,16,0,Math.PI*2);ctx.fill();
+ctx.fillStyle='#9ca3af';ctx.beginPath();ctx.arc(-35,18,10,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(35,18,10,0,Math.PI*2);ctx.fill();
+// Spare tyre back (like G-Wagon)
+ctx.fillStyle='#d1d5db';ctx.beginPath();ctx.arc(-58,0,14,0,Math.PI*2);ctx.fill();ctx.fillStyle='#9ca3af';ctx.beginPath();ctx.arc(-58,0,6,0,Math.PI*2);ctx.fill();
+// Windows
+ctx.fillStyle='#38bdf8';ctx.fillRect(-40,-35,25,12);ctx.fillRect(-10,-35,25,12);ctx.fillRect(18,-35,18,12);
+// Lights
+ctx.fillStyle=speed>1?'#fef08a':'#4b5563';ctx.fillRect(52,-18,6,6);ctx.fillRect(52,6,6,6);
+ctx.fillStyle='#ef4444';ctx.fillRect(-55,-15,4,6);ctx.fillRect(-55,5,4,6);
+// Door open
+if(doorOpen){ctx.fillStyle='#111827';ctx.save();ctx.translate(10,0);ctx.rotate(-0.6);ctx.fillRect(-5,-28,35,46);ctx.fillStyle='#38bdf8';ctx.fillRect(0,-23,20,10);ctx.restore();}
+ctx.restore();
+// Player outside when door open
+if(playerOutside && doorOpen){ctx.fillStyle='#ef4444';ctx.fillRect(cx+35,cy-45,12,28);ctx.fillStyle='#fca5a5';ctx.beginPath();ctx.arc(cx+41,cy-50,8,0,Math.PI*2);ctx.fill();ctx.fillStyle='#111';ctx.fillRect(cx+33,cy-17,16,18);}
+// UI
+document.getElementById('km').innerText=Math.floor(km);
+document.getElementById('sp').innerText=Math.floor(speed*18);
+document.getElementById('fuel').innerText=Math.floor(fuel);
+if(fuel<=0){document.getElementById('fuel').innerText='EMPTY';}
+requestAnimationFrame(loop);
+}
+</script>
+</body>
+</html>
