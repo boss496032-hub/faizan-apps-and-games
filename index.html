@@ -3,165 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Faizan Apps & Games - Official Store</title>
-<link rel="manifest" href="manifest.json">
+<title>Faizan Play Store</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0e1a;color:#fff;font-family:Arial}
-.navbar{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;background:#111827;position:sticky;top:0;z-index:100;border-bottom:1px solid #1f2937}
-.logo{font-weight:900;font-size:16px;background:linear-gradient(90deg,#ff0040,#ff8a00);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.menu{display:flex;gap:12px;font-size:11px;opacity:0.8}
-.menu span{cursor:pointer;padding:4px 8px;border-radius:6px;background:#1f2937}
-.search{margin:12px;padding:10px 14px;background:#1e293b;border-radius:12px;display:flex;gap:10px;border:1px solid #334155}
-.search input{flex:1;background:transparent;border:none;color:#fff;outline:none;font-size:13px}
-.banner{margin:12px;background:linear-gradient(135deg,#ff0040,#7c3aed,#06b6d4);border-radius:18px;padding:20px;text-align:center}
-.banner h2{font-size:18px}
-.banner p{font-size:11px;opacity:0.9;margin-top:4px}
-.stats{display:flex;gap:10px;margin:12px}
-.stat{flex:1;background:#1e293b;padding:10px;border-radius:12px;text-align:center;border:1px solid #334155}
-.stat b{font-size:16px;color:#22c55e}
-.stat p{font-size:10px;opacity:0.6;margin-top:2px}
-.tabs{display:flex;gap:8px;margin:12px;overflow-x:auto}
-.tab{padding:8px 14px;border-radius:20px;background:#1e293b;border:1px solid #334155;font-size:11px;white-space:nowrap;cursor:pointer}
-.tab.active{background:#22c55e;color:#000;font-weight:900;border-color:#22c55e}
-.section{margin:12px}
-.section h3{font-size:14px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-.section h3 span{font-size:10px;background:#22c55e;color:#000;padding:3px 8px;border-radius:10px}
+*{margin:0;padding:0;box-sizing:border-box}body{background:#0a0e1a;color:#fff;font-family:Arial;padding:12px}
+.navbar{display:flex;justify-content:space-between;padding:12px;background:#111827;border-radius:12px;margin-bottom:12px}
+.logo{font-weight:900;color:#22c55e}
+.search{padding:10px;background:#1e293b;border-radius:12px;display:flex;gap:8px;margin-bottom:12px}
+.search input{flex:1;background:transparent;border:none;color:#fff;outline:none}
+.banner{background:linear-gradient(135deg,#ff0040,#ff8a00);padding:20px;border-radius:16px;text-align:center;margin-bottom:12px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(min-width:600px){.grid{grid-template-columns:1fr 1fr 1fr}}
-.app{background:#1e293b;border-radius:16px;padding:12px;border:1px solid #334155;position:relative}
-.app-icon{width:55px;height:55px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:8px}
-.app h4{font-size:12px;color:#fff;line-height:1.2}
-.app p{font-size:10px;opacity:0.6;margin:3px 0;height:28px;overflow:hidden}
-.app-meta{display:flex;gap:6px;margin:6px 0;font-size:9px;opacity:0.5}
-.btn-row{display:flex;gap:6px;margin-top:8px}
-.btn{flex:1;padding:8px;border-radius:8px;border:none;font-weight:900;font-size:10px;text-decoration:none;text-align:center;cursor:pointer}
-.btn-dl{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff}
-.btn-play{background:#334155;color:#fff}
-.btn-full{width:100%;margin-top:6px;background:#0f172a;border:1px dashed #22c55e;color:#22c55e;font-size:9px;padding:6px}
-.footer{margin-top:20px;background:#111827;padding:18px;border-radius:18px 18px 0 0;text-align:center;border-top:1px solid #1f2937}
-.footer-links{display:flex;justify-content:center;gap:15px;margin:10px 0;font-size:11px;opacity:0.7}
-.footer p{font-size:10px;opacity:0.4;margin-top:8px}
-.live{position:absolute;top:8px;right:8px;background:#ef4444;color:#fff;font-size:8px;padding:2px 6px;border-radius:10px;animation:blink 1.5s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.4}}
+.app{background:#1e293b;padding:12px;border-radius:14px;border:1px solid #334155}
+.app h4{font-size:12px;color:#22c55e}
+.app p{font-size:10px;opacity:0.6;margin:4px 0}
+.btn{padding:8px;border-radius:8px;border:none;font-weight:900;font-size:10px;text-decoration:none;text-align:center;display:block;margin-top:6px}
+.dl{background:#22c55e;color:#000}
+.play{background:#334155;color:#fff}
+.footer{text-align:center;margin-top:20px;padding:15px;background:#111827;border-radius:12px;font-size:10px;opacity:0.6}
 </style>
 </head>
 <body>
-
-<div class="navbar">
-<div class="logo">🎮 FAIZAN STORE</div>
-<div class="menu"><span>🏠 Home</span><span>🔥 Trending</span><span>📞 Contact</span></div>
+<div class="navbar"><div class="logo">FAIZAN STORE</div><div><a href="contact.html" style="color:#fff;text-decoration:none;font-size:11px">📞 Contact: boss496032@gmail.com</a></div></div>
+<div class="search">🔍 <input placeholder="Search Games..."></div>
+<div class="banner"><h2>OFFICIAL FAIZAN STORE</h2><p style="font-size:11px;margin-top:4px">All Games - Direct Download - Free ✅</p></div>
+<div class="grid">
+<div class="app"><h4>🏎️ Extreme 3D Drift</h4><p>8K Neon City - Drift</p><a class="btn dl" href="car-3d/index.html" download>⬇️ DOWNLOAD</a><a class="btn play" href="car-3d/">▶️ PLAY ONLINE</a></div>
+<div class="app"><h4>🏍️ CG 125 Racing</h4><p>Desi Bike - Wheelie</p><a class="btn dl" href="cg125/index.html" download>⬇️ DOWNLOAD</a><a class="btn play" href="cg125/">▶️ PLAY ONLINE</a></div>
+<div class="app"><h4>🚗 2D Drift Master</h4><p>Coins - Nitro - Score</p><a class="btn dl" href="car-drift/index.html" download>⬇️ DOWNLOAD</a><a class="btn play" href="car-drift/">▶️ PLAY ONLINE</a></div>
+<div class="app" style="border:2px solid #f59e0b"><h4>🪙 Coin Alert Pro NEW</h4><p>New Coin - Full Info - Alert</p><a class="btn dl" href="coin-alert/index.html" download>⬇️ DOWNLOAD</a><a class="btn play" href="coin-alert/">▶️ OPEN APP</a></div>
 </div>
-
-<div class="search">
-<span>🔍</span><input type="text" placeholder="Search Apps, Games... (e.g. Drift, CG125)" onkeyup="searchApp(this.value)"><span>🎤</span>
-</div>
-
-<div class="banner">
-<h2>🚀 OFFICIAL FAIZAN PLAY STORE</h2>
-<p>All Games & Apps - Direct Download - 100% Free & Safe ✅</p>
-<p style="margin-top:8px;font-size:10px;background:rgba(0,0,0,0.3);display:inline-block;padding:4px 10px;border-radius:20px">⭐ 12.5k Downloads | 4.9 Rating | Verified Store</p>
-</div>
-
-<div class="stats">
-<div class="stat"><b>4</b><p>Total Apps</p></div>
-<div class="stat"><b>2.1k+</b><p>Downloads</p></div>
-<div class="stat"><b>4.9★</b><p>Rating</p></div>
-<div class="stat"><b>100%</b><p>Safe</p></div>
-</div>
-
-<div class="tabs">
-<div class="tab active" onclick="filterTab(this,'all')">All 🎮</div>
-<div class="tab" onclick="filterTab(this,'games')">Games 🏎️</div>
-<div class="tab" onclick="filterTab(this,'apps')">Apps 📱</div>
-<div class="tab" onclick="filterTab(this,'new')">New 🆕</div>
-<div class="tab" onclick="filterTab(this,'trending')">Trending 🔥</div>
-</div>
-
-<div class="section">
-<h3>🔥 Featured - Trending Now <span>LIVE</span></h3>
-<div class="grid" id="appGrid">
-
-<div class="app" data-name="extreme drift 3d">
-<div class="live">LIVE</div>
-<div class="app-icon" style="background:linear-gradient(135deg,#ff0040,#ffaa00)">🏎️</div>
-<h4>Extreme 3D Drift 8K</h4>
-<p>8K Neon City • Ray Tracing • Drift Master</p>
-<div class="app-meta"><span>⭐4.9</span><span>📦14MB</span><span>🏎️Game</span></div>
-<div class="btn-row">
-<a class="btn btn-dl" href="car-3d/index.html" download>⬇️ DOWNLOAD</a>
-<a class="btn btn-play" href="car-3d/">▶️ PLAY</a>
-</div>
-<a class="btn btn-full" href="https://www.appsgeyser.com" target="_blank">📲 GET APK FOR ANDROID</a>
-</div>
-
-<div class="app" data-name="cg 125 bike racing">
-<div class="app-icon" style="background:linear-gradient(135deg,#00ff88,#0088ff)">🏍️</div>
-<h4>CG 125 Racing</h4>
-<p>Pakistani Bike • Wheelie • Desi Roads</p>
-<div class="app-meta"><span>⭐4.8</span><span>📦9MB</span><span>🇵🇰Desi</span></div>
-<div class="btn-row">
-<a class="btn btn-dl" href="cg125/index.html" download>⬇️ DOWNLOAD</a>
-<a class="btn btn-play" href="cg125/">▶️ PLAY</a>
-</div>
-<a class="btn btn-full" href="https://www.appsgeyser.com" target="_blank">📲 GET APK FOR ANDROID</a>
-</div>
-
-<div class="app" data-name="2d drift master">
-<div class="app-icon" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)">🚗</div>
-<h4>2D Drift Master</h4>
-<p>Classic Drift • Coins • High Score</p>
-<div class="app-meta"><span>⭐4.7</span><span>📦6MB</span><span>⚡Fast</span></div>
-<div class="btn-row">
-<a class="btn btn-dl" href="car-drift/index.html" download>⬇️ DOWNLOAD</a>
-<a class="btn btn-play" href="car-drift/">▶️ PLAY</a>
-</div>
-<a class="btn btn-full" href="https://www.appsgeyser.com" target="_blank">📲 GET APK FOR ANDROID</a>
-</div>
-
-<div class="app" data-name="coin alert pro crypto" style="border:2px solid #f59e0b">
-<div class="live" style="background:#f59e0b;color:#000">NEW</div>
-<div class="app-icon" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#000">🪙</div>
-<h4>Coin Alert Pro</h4>
-<p>New Coin Alert • Price • Full Info • Sound</p>
-<div class="app-meta"><span>⭐5.0</span><span>📦2MB</span><span>🔔App</span></div>
-<div class="btn-row">
-<a class="btn btn-dl" href="coin-alert/index.html" download style="background:linear-gradient(135deg,#f59e0b,#ef4444)">⬇️ DOWNLOAD</a>
-<a class="btn btn-play" href="coin-alert/">▶️ OPEN</a>
-</div>
-<a class="btn btn-full" style="border-color:#f59e0b;color:#f59e0b" href="https://www.appsgeyser.com" target="_blank">📲 GET APK FOR ANDROID</a>
-</div>
-
-</div>
-</div>
-
 <div class="footer">
-<div class="footer-links"><span>About</span><span>Privacy</span><span>Contact</span><span>DMCA</span><span>Help</span></div>
-<p><b>Faizan Apps & Games</b> - Official Store</p>
-<p>All Apps & Games are Free & Safe | Verified by Google ✅</p>
-<p style="margin-top:10px">© 2026 Faizan Store | Lahore, Pakistan 🇵🇰</p>
-<p style="font-size:9px;margin-top:6px">Made with ❤️ by Faizan | boss496032-hub.github.io/faizan-apps-and-games/</p>
+<p>📧 boss496032@gmail.com</p>
+<p>© 2026 Faizan Store | Lahore, Pakistan</p>
+<p style="margin-top:6px"><a href="contact.html" style="color:#22c55e">Contact Us</a> | Privacy | About</p>
 </div>
-
-<script>
-function searchApp(q){
- q=q.toLowerCase();
- document.querySelectorAll('.app').forEach(app=>{
-   app.style.display = app.dataset.name.includes(q) ? 'block' : 'none';
- });
-}
-function filterTab(el,type){
- document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
- el.classList.add('active');
- // Simple filter demo
- let apps = document.querySelectorAll('.app');
- if(type==='all'){apps.forEach(a=>a.style.display='block')}
- if(type==='games'){apps.forEach(a=>a.style.display = a.dataset.name.includes('drift')||a.dataset.name.includes('cg')||a.dataset.name.includes('racing')?'block':'none')}
- if(type==='apps'){apps.forEach(a=>a.style.display = a.dataset.name.includes('coin')?'block':'none')}
- if(type==='new'){apps.forEach(a=>a.style.display = a.dataset.name.includes('coin')?'block':'none')}
- if(type==='trending'){apps.forEach(a=>a.style.display='block')}
-}
-</script>
-
 </body>
 </html>
