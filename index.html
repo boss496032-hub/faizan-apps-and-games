@@ -8,33 +8,48 @@
 *{margin:0;padding:0;box-sizing:border-box}body{background:#0a0e1a;color:#fff;font-family:Arial;padding:12px}
 .navbar{display:flex;justify-content:space-between;padding:12px;background:#111827;border-radius:12px;margin-bottom:12px}
 .logo{font-weight:900;color:#22c55e}
-.search{padding:10px;background:#1e293b;border-radius:12px;display:flex;gap:8px;margin-bottom:12px}
-.search input{flex:1;background:transparent;border:none;color:#fff;outline:none}
 .banner{background:linear-gradient(135deg,#ff0040,#ff8a00);padding:20px;border-radius:16px;text-align:center;margin-bottom:12px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .app{background:#1e293b;padding:12px;border-radius:14px;border:1px solid #334155}
 .app h4{font-size:12px;color:#22c55e}
 .app p{font-size:10px;opacity:0.6;margin:4px 0}
-.btn{padding:8px;border-radius:8px;border:none;font-weight:900;font-size:10px;text-decoration:none;text-align:center;display:block;margin-top:6px}
+.btn{padding:10px;border-radius:8px;border:none;font-weight:900;font-size:11px;text-align:center;display:block;margin-top:6px;cursor:pointer;width:100%}
 .dl{background:#22c55e;color:#000}
-.play{background:#334155;color:#fff}
+.play{background:#334155;color:#fff;text-decoration:none}
 .footer{text-align:center;margin-top:20px;padding:15px;background:#111827;border-radius:12px;font-size:10px;opacity:0.6}
 </style>
 </head>
 <body>
-<div class="navbar"><div class="logo">FAIZAN STORE</div><div><a href="contact.html" style="color:#fff;text-decoration:none;font-size:11px">📞 Contact: boss496032@gmail.com</a></div></div>
-<div class="search">🔍 <input placeholder="Search Games..."></div>
-<div class="banner"><h2>OFFICIAL FAIZAN STORE</h2><p style="font-size:11px;margin-top:4px">All Games - Direct Download - Free ✅</p></div>
+<div class="navbar"><div class="logo">🎮 FAIZAN STORE</div><div style="font-size:10px">📧 boss496032@gmail.com</div></div>
+<div class="banner"><h2>OFFICIAL FAIZAN STORE</h2><p style="font-size:11px;margin-top:4px">All Games - One Click Download ✅</p></div>
 <div class="grid">
-<div class="app"><h4>🏎️ Extreme 3D Drift</h4><p>8K Neon City - Drift</p><a class="btn dl" href="car-3d/index.html" download>⬇️ DOWNLOAD</a><a class="btn play" href="car-3d/">▶️ PLAY ONLINE</a></div>
-<div class="app"><h4>🏍️ CG 125 Racing</h4><p>Desi Bike - Wheelie</p><a class="btn dl" href="cg125/index.html" download>⬇️ DOWNLOAD</a><a class="btn play" href="cg125/">▶️ PLAY ONLINE</a></div>
-<div class="app"><h4>🚗 2D Drift Master</h4><p>Coins - Nitro - Score</p><a class="btn dl" href="car-drift/index.html" download>⬇️ DOWNLOAD</a><a class="btn play" href="car-drift/">▶️ PLAY ONLINE</a></div>
-<div class="app" style="border:2px solid #f59e0b"><h4>🪙 Coin Alert Pro NEW</h4><p>New Coin - Full Info - Alert</p><a class="btn dl" href="coin-alert/index.html" download>⬇️ DOWNLOAD</a><a class="btn play" href="coin-alert/">▶️ OPEN APP</a></div>
+<div class="app"><h4>🏎️ Extreme 3D Drift 8K</h4><p>8K Neon City - Drift</p><button class="btn dl" onclick="downloadGame('car-3d/index.html','Faizan-Extreme-3D-Drift-8K.html')">⬇️ DOWNLOAD GAME</button><a class="btn play" href="car-3d/">▶️ PLAY ONLINE</a></div>
+<div class="app"><h4>🏍️ CG 125 Racing</h4><p>Desi Bike - Wheelie</p><button class="btn dl" onclick="downloadGame('cg125/index.html','Faizan-CG125-Racing.html')">⬇️ DOWNLOAD GAME</button><a class="btn play" href="cg125/">▶️ PLAY ONLINE</a></div>
+<div class="app"><h4>🚗 2D Drift Master</h4><p>Coins - Nitro - Score</p><button class="btn dl" onclick="downloadGame('car-drift/index.html','Faizan-2D-Drift-Master.html')">⬇️ DOWNLOAD GAME</button><a class="btn play" href="car-drift/">▶️ PLAY ONLINE</a></div>
+<div class="app" style="border:2px solid #f59e0b"><h4>🪙 Coin Alert Pro NEW</h4><p>New Coin - Full Info - Alert</p><button class="btn dl" onclick="downloadGame('coin-alert/index.html','Faizan-Coin-Alert-Pro.html')" style="background:#f59e0b">⬇️ DOWNLOAD APP</button><a class="btn play" href="coin-alert/">▶️ OPEN APP</a></div>
 </div>
-<div class="footer">
-<p>📧 boss496032@gmail.com</p>
-<p>© 2026 Faizan Store | Lahore, Pakistan</p>
-<p style="margin-top:6px"><a href="contact.html" style="color:#22c55e">Contact Us</a> | Privacy | About</p>
-</div>
+<div class="footer"><p>📧 boss496032@gmail.com</p><p>© 2026 Faizan Store | All Downloads Free</p><p><a href="contact.html" style="color:#22c55e">Contact Us</a></p></div>
+<script>
+async function downloadGame(url, filename){
+  try{
+    let btn = event.target;
+    btn.innerText = '⏳ DOWNLOADING...';
+    let res = await fetch(url);
+    let text = await res.text();
+    let blob = new Blob([text], {type: 'text/html'});
+    let a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    btn.innerText = '✅ DOWNLOADED!';
+    setTimeout(()=>btn.innerText='⬇️ DOWNLOAD GAME',2000);
+  }catch(e){
+    alert('Download failed, opening game directly');
+    window.open(url,'_blank');
+  }
+}
+</script>
 </body>
 </html>
