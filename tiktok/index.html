@@ -1,8 +1,10 @@
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="manifest" href="manifest.json">
 <title>TikTok PRO - For You + Sound</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
@@ -22,7 +24,7 @@ body{background:#000;color:#fff;overflow:hidden;height:100vh}
 .iconBtn{width:48px;height:48px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;border:none;color:#fff;cursor:pointer}
 .iconBtn.liked{background:#fe2c55}
 .count{font-size:11px;font-weight:700;margin-top:-10px;text-align:center}
-.soundBtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.5);padding:10px 16px;border-radius:20px;font-size:13px;pointer-events:auto;cursor:pointer;border:1px solid #fff}
+.soundBtn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,0.6);padding:10px 16px;border-radius:20px;font-size:13px;pointer-events:auto;cursor:pointer;border:1px solid #fff}
 .bottomNav{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:1px solid #222;display:flex;justify-content:space-around;padding:6px 0 8px;z-index:20}
 .bottomNav div{text-align:center;font-size:10px;color:#888;cursor:pointer}
 .bottomNav div.active{color:#fff}
@@ -92,8 +94,6 @@ body{background:#000;color:#fff;overflow:hidden;height:100vh}
 let allUsers = JSON.parse(localStorage.getItem('tikAllUsers') || '{}');
 let current = localStorage.getItem('tikCurrent') || null;
 let videos = JSON.parse(localStorage.getItem('tikForYouVideos') || 'null');
-
-// Default videos with SOUND
 if(!videos){
  videos=[
  {id:1,owner:'adeel.singha5',caption:'Kot Momin diaries 🍊 #fyp #kotmomin',sound:'Original Sound - adeel.singha5',url:'https://www.w3schools.com/html/mov_bbb.mp4',likes:89,likedBy:[],views:2400},
@@ -104,7 +104,6 @@ if(!allUsers['adeel.singha5']){
  allUsers['adeel.singha5']={fullName:'Adeel Singh',password:'1234',avatar:'A',followingList:[],followersList:[]};
  localStorage.setItem('tikAllUsers',JSON.stringify(allUsers));
 }
-
 function switchTab(t){
  document.getElementById('tabIn').classList.toggle('active',t=='in');
  document.getElementById('tabUp').classList.toggle('active',t=='up');
@@ -135,13 +134,11 @@ function loginSuccess(u){
  renderForYou();
 }
 function skipLogin(){document.getElementById('loginPage').style.display='none'; renderForYou();}
-
 function openUpload(){
  if(!current){document.getElementById('loginPage').style.display='flex'; return;}
  document.getElementById('uploadPage').style.display='flex';
 }
 function closeUpload(){document.getElementById('uploadPage').style.display='none';}
-
 function uploadVideo(){
  let file=document.getElementById('vFile').files[0];
  let cap=document.getElementById('vCaption').value || '#fyp #foryou';
@@ -150,7 +147,7 @@ function uploadVideo(){
  document.getElementById('upStat').innerText='Uploading with sound...';
  let reader=new FileReader();
  reader.onload=function(e){
-  let url=e.target.result; // ye data URL sound ke saath save hoga
+  let url=e.target.result;
   videos.unshift({id:Date.now(),owner:current,caption:cap,sound:sound,url:url,likes:0,likedBy:[],views:0});
   localStorage.setItem('tikForYouVideos',JSON.stringify(videos));
   closeUpload();
@@ -158,12 +155,10 @@ function uploadVideo(){
   alert('Video For You pe chali gayi! Sound ke saath ✅');
   document.getElementById('foryou').scrollTop=0;
  };
- reader.readAsDataURL(file); // Sound preserve hota hai is se
+ reader.readAsDataURL(file);
 }
-
 function renderForYou(){
  let feed=document.getElementById('foryou'); feed.innerHTML='';
- // For You = Random order, har video ayegi
  let shuffled=[...videos].sort(()=>0.5-Math.random());
  shuffled.forEach((v,i)=>{
   let isLiked=current && v.likedBy.includes(current);
@@ -182,16 +177,14 @@ function renderForYou(){
      <div class="right">
       <button class="iconBtn" style="background:#fff;color:#000;font-size:14px;font-weight:900">+</button>
       <button class="iconBtn ${isLiked?'liked':''}" onclick="likeVideo(${v.id})">❤️</button><div class="count">${v.likes}</div>
-      <button class="iconBtn" onclick="alert('Comments: For You pe viral horahi hai!')">💬</button><div class="count">${Math.floor(v.views/10)}</div>
+      <button class="iconBtn" onclick="alert('For You pe viral!')">💬</button><div class="count">${Math.floor(v.views/10)}</div>
       <button class="iconBtn" onclick="followUser('${v.owner}')">↗️</button><div class="count">Share</div>
      </div>
     </div>
    </div>
   </div>`;
  });
- // Auto play first video
  setTimeout(()=>{let first=document.querySelector('video'); if(first) first.play().catch(()=>{});},500);
- // Intersection observer for auto play with sound handling
  let observer=new IntersectionObserver((entries)=>{
   entries.forEach(e=>{
    let vid=e.target.querySelector('video');
@@ -200,15 +193,10 @@ function renderForYou(){
  },{threshold:0.7});
  document.querySelectorAll('.videoPage').forEach(p=>observer.observe(p));
 }
-
-function togglePlay(v){
- if(v.paused) v.play(); else v.pause();
-}
+function togglePlay(v){if(v.paused) v.play(); else v.pause();}
 function unmuteVideo(id){
  let v=document.getElementById('vid-'+id);
- v.muted=false;
- v.volume=1.0;
- v.play();
+ v.muted=false; v.volume=1.0; v.play();
  document.getElementById('soundBtn-'+id).style.display='none';
 }
 function likeVideo(id){
@@ -222,10 +210,9 @@ function followUser(target){
  if(!current){document.getElementById('loginPage').style.display='flex';return;}
  if(target===current)return;
  let me=allUsers[current]; if(!me.followingList) me.followingList=[];
- if(me.followingList.includes(target)){me.followingList=me.followingList.filter(x=>x!==target); alert('Unfollowed @'+target);} else {me.followingList.push(target); alert('Followed @'+target+' ✅ Following me add hogaya');}
+ if(me.followingList.includes(target)){me.followingList=me.followingList.filter(x=>x!==target); alert('Unfollowed @'+target);} else {me.followingList.push(target); alert('Followed @'+target+' ✅');}
  localStorage.setItem('tikAllUsers',JSON.stringify(allUsers));
 }
-
 if(current && allUsers[current]){document.getElementById('loginPage').style.display='none'; renderForYou();} else {renderForYou();}
 </script>
 </body>
