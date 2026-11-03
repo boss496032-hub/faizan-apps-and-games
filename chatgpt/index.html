@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<title>ChatGPT PRO - Faizan</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Inter,Segoe UI,Arial}
+body{background:#212121;color:#ececec;height:100vh;display:flex;overflow:hidden}
+#sidebar{width:260px;background:#171717;display:flex;flex-direction:column;padding:10px;position:relative}
+.sideTop{display:flex;justify-content:space-between;align-items:center;padding:10px}
+.newBtn{background:#fff;color:#000;padding:11px;border-radius:12px;text-align:center;font-weight:800;font-size:13px;cursor:pointer;margin:10px 0}
+.hist{flex:1;overflow-y:auto}
+.cItem{padding:10px;border-radius:10px;font-size:13px;cursor:pointer;display:flex;justify-content:space-between;margin-bottom:2px}
+.cItem:hover,.cItem.active{background:#2f2f2f}
+#main{flex:1;display:flex;flex-direction:column;position:relative}
+#top{height:56px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid #2f2f2f;gap:10px}
+#top b{font-size:16px}
+#top small{background:#2f2f2f;padding:4px 10px;border-radius:20px;font-size:11px}
+#box{flex:1;overflow-y:auto;padding-bottom:120px}
+.msg{max-width:800px;margin:0 auto;padding:20px;display:flex;gap:16px}
+.msg.ai{background:rgba(47,47,47,0.3)}
+.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;flex-shrink:0}
+.av.user{background:#5436DA;color:#fff}
+.av.ai{background:#19c37d;color:#fff}
+.ct{flex:1;font-size:15px;line-height:1.7;white-space:pre-wrap;word-break:break-word}
+.ct pre{background:#000;padding:14px;border-radius:10px;margin:10px 0;overflow-x:auto;position:relative;border:1px solid #333}
+.ct code{font-family:Consolas,monospace;font-size:13px}
+.copy{position:absolute;top:6px;right:6px;background:#2f2f2f;border:1px solid #444;color:#fff;padding:4px 8px;border-radius:6px;font-size:11px;cursor:pointer}
+#inputWrap{position:absolute;bottom:0;left:0;right:0;padding:20px;background:linear-gradient(transparent,#212121 40%);display:flex;justify-content:center}
+.ib{width:100%;max-width:800px;background:#2f2f2f;border-radius:26px;display:flex;align-items:end;padding:8px 10px;gap:8px;border:1px solid #3a3a3a}
+.ib textarea{flex:1;background:transparent;border:none;outline:none;color:#fff;resize:none;font-size:15px;padding:8px;max-height:150px}
+.ib button{background:#fff;color:#000;border:none;width:36px;height:36px;border-radius:50%;font-size:18px;font-weight:900;cursor:pointer}
+@media(max-width:800px){#sidebar{position:fixed;left:-260px;top:0;height:100vh;z-index:99;transition:0.3s}#sidebar.open{left:0}}
+</style>
+</head>
+<body>
+
+<div id="sidebar">
+<div class="sideTop"><b>🤖 ChatGPT</b><span onclick="toggle()" style="cursor:pointer">✕</span></div>
+<div class="newBtn" onclick="newChat()">+ New chat</div>
+<div class="hist" id="hist"></div>
+<div style="border-top:1px solid #222;padding-top:10px">
+<input id="api" placeholder="sk-... API Key (Optional)" style="width:100%;padding:9px;background:#2f2f2f;border:1px solid #333;border-radius:8px;color:#fff;font-size:12px">
+<div style="font-size:10px;color:#777;margin-top:5px">Key lagao to Real GPT-4o, warna Pro Demo</div>
+</div>
+</div>
+
+<div id="main">
+<div id="top"><button onclick="toggle()" style="background:#2f2f2f;border:none;color:#fff;width:36px;height:36px;border-radius:8px">☰</button> <b>ChatGPT</b> <small>PRO • 4o • by Faizan</small></div>
+<div id="box">
+<div class="msg ai"><div class="av ai">G</div><div class="ct">Salam Faizan! 👋 Mai tumhara **ChatGPT PRO MAX** hun.
+
+✅ Original ChatGPT jaisa UI
+✅ Typing animation
+✅ Code copy + highlight
+✅ History save
+✅ API support
+
+Kuch bhi pucho, mai ready hun! 🚀</div></div>
+</div>
+<div id="inputWrap">
+<div class="ib">
+<textarea id="inp" placeholder="Message ChatGPT..." rows="1" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"></textarea>
+<button onclick="send()">↑</button>
+</div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+let chats=JSON.parse(localStorage.getItem('gptPro2')||'{}');
+let cur=localStorage.getItem('gptCur2')||null;
+let apiEl=document.getElementById('api');
+apiEl.value=localStorage.getItem('gptKey')||'';
+apiEl.onchange=()=>localStorage.setItem('gptKey',apiEl.value);
+
+function toggle(){document.getElementById('sidebar').classList.toggle('open')}
+function newChat(){let id='c_'+Date.now();chats[id]={t:'New Chat',m:[]};cur=id;save();document.getElementById('box').innerHTML='<div class="msg ai"><div class="av ai">G</div><div class="ct">New chat ready! Bolo kya banana hai?</div></div>';}
+function save(){localStorage.setItem('gptPro2',JSON.stringify(chats));localStorage.setItem('gptCur2',cur);renderHist()}
+function renderHist(){let h=document.getElementById('hist');h.innerHTML='';Object.keys(chats).reverse().forEach(id=>{h.innerHTML+=`<div class="cItem ${id===cur?'active':''}" onclick="openC('${id}')"><span>💬 ${chats[id].t.slice(0,22)}</span><span onclick="delC(event,'${id}')">🗑️</span></div>`})}
+function openC(id){cur=id;let b=document.getElementById('box');b.innerHTML='';chats[id].m.forEach(x=>addUI(x.r,x.txt,false));if(window.innerWidth<800)toggle()}
+function delC(e,id){e.stopPropagation();delete chats[id];if(cur===id)cur=null;save();newChat()}
+function addUI(role,txt,saveMsg=true){
+let box=document.getElementById('box');
+let d=document.createElement('div');d.className='msg '+(role==='user'?'user':'ai');
+let safe=txt.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+safe=safe.replace(/```(\w+)?\n?([\s\S]*?)```/g,(m,l,c)=>`<pre><button class="copy" onclick="navigator.clipboard.writeText(this.nextElementSibling.innerText);this.innerText='Copied!'">Copy</button><code>${c}</code></pre>`);
+d.innerHTML=`<div class="av ${role==='user'?'user':'ai'}">${role==='user'?'F':'G'}</div><div class="ct">${safe}</div>`;
+box.appendChild(d);box.scrollTop=box.scrollHeight;
+if(saveMsg&&cur){chats[cur].m.push({r:role,txt});if(chats[cur].m.length===1)chats[cur].t=txt.slice(0,28);save()}
+setTimeout(()=>hljs.highlightAll(),50);
+return d;
+}
+async function send(){
+let inp=document.getElementById('inp');let t=inp.value.trim();if(!t)return;
+if(!cur){let id='c_'+Date.now();chats[id]={t:t.slice(0,28),m:[]};cur=id}
+addUI('user',t,true);inp.value='';inp.style.height='auto';
+let aiDiv=addUI('ai','',false);
+let cEl=aiDiv.querySelector('.ct');
+let key=localStorage.getItem('gptKey');
+if(key&&key.startsWith('sk-')){
+try{
+let r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'gpt-4o-mini',messages:[{role:'system',content:'You are ChatGPT PRO by Faizan. Answer in Roman Urdu + English mix, helpful, pro developer.'},{role:'user',content:t}]})});
+let j=await r.json();let ans=j.choices?.[0]?.message?.content||JSON.stringify(j);
+cEl.innerHTML=ans.replace(/</g,'&lt;');chats[cur].m.push({r:'ai',txt:ans});save();hljs.highlightAll();
+}catch(e){cEl.innerText='API Error: '+e.message}
+}else{
+let rep=getProReply(t);
+let i=0;let it=setInterval(()=>{cEl.innerText=rep.slice(0,i++);document.getElementById('box').scrollTop=document.getElementById('box').scrollHeight;if(i>rep.length){clearInterval(it);chats[cur].m.push({r:'ai',txt:rep});save();hljs.highlightAll();}},10);
+}
+}
+function getProReply(q){
+q=q.toLowerCase();
+if(q.includes('apk')) return `Faizan, APK PRO tarika:\n\n1. GitHub Pages pe site host karo\n2. manifest.json add karo\n3. PWABuilder pe Android > Signing = None karke APK lo\n\nYa AppsGeyser.com pe website link dalo, direct install wali APK milegi!\n\nBatao konsi APK chahiye?\n\n\`\`\`json\n{\n  "name":"My App"\n}\n\`\`\``;
+if(q.includes('code')||q.includes('html')) return `Ye lo PRO code Faizan:\n\n\`\`\`html\n<!DOCTYPE html>\n<html>\n<head><title>Pro App</title></head>\n<body>\n<h1>Faizan's Pro App</h1>\n</body>\n</html>\n\`\`\`\n\nIsko GitHub pe daal do!`;
+return `Bohat acha sawal: "${q}"\n\nIska PRO jawab ye hai ke ye feature tum apni app me add kar sakte ho. Mai tumhe complete code, UI aur APK tak help karunga.\n\nTumhe is me kya chahiye? Detail batao, mai abhi code bana deta hun!`;
+}
+renderHist();if(!cur)newChat();
+</script>
+</body>
+</html>
