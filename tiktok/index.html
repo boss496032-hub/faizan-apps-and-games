@@ -1,210 +1,181 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>TikTok PRO - Made by Faizan</title>
+<title>TikTok PRO - Faizan</title>
+<link rel="manifest" href="../manifest.json">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#000;color:#fff;font-family:Arial;overflow:hidden;height:100vh}
-.app{max-width:450px;margin:0 auto;height:100vh;position:relative;background:#000;overflow:hidden}
-.header{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;padding:12px 15px;background:linear-gradient(to bottom,rgba(0,0,0,0.8),transparent)}
-.logo{font-weight:900;font-size:18px}
-.logo span{color:#fe2c55}
-.tabs{display:flex;gap:18px;font-size:14px;font-weight:700}
-.tab{color:#ffffff80}
-.tab.active{color:#fff;border-bottom:2px solid #fff}
-.feed{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch}
-.feed::-webkit-scrollbar{display:none}
-.videoCard{height:100vh;scroll-snap-align:start;position:relative;background:#111;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.videoCard video, .videoCard img{width:100%;height:100%;object-fit:cover}
-.overlay{position:absolute;bottom:0;left:0;right:0;padding:15px;background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);display:flex;justify-content:space-between;align-items:flex-end}
-.left{flex:1;max-width:70%}
-.user{font-weight:800;font-size:15px;margin-bottom:6px}
-.desc{font-size:13px;line-height:1.3;color:#fffe;white-space:pre-wrap}
-.song{font-size:11px;margin-top:6px;display:flex;gap:6px;align-items:center;color:#fff}
-.right{display:flex;flex-direction:column;gap:20px;align-items:center;padding-bottom:10px}
-.action{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer}
-.circle{width:48px;height:48px;border-radius:50%;background:#ffffff1a;display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid #ffffff30}
-.count{font-size:11px;font-weight:700}
-.profileAdd{position:relative}
-.addBtn{position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);background:#fe2c55;color:#fff;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:900}
-.bottomNav{position:absolute;bottom:0;left:0;right:0;background:#000;display:flex;justify-content:space-around;padding:8px 0 12px;border-top:1px solid #ffffff1a;z-index:20}
-.navItem{text-align:center;font-size:9px;color:#ffffff99;cursor:pointer}
-.navItem.active{color:#fff}
-.navIcon{font-size:20px;margin-bottom:2px}
-.uploadBtn{background:#fff;color:#000;padding:2px 10px;border-radius:6px;font-weight:900;font-size:16px;position:relative}
-.uploadBtn:before{content:'';position:absolute;left:-4px;top:2px;width:100%;height:100%;background:#25f4ee;border-radius:6px;z-index:-1}
-.uploadBtn:after{content:'';position:absolute;right:-4px;top:-2px;width:100%;height:100%;background:#fe2c55;border-radius:6px;z-index:-2}
-.progress{position:absolute;top:0;left:0;height:3px;background:#fe2c55;width:0%;transition:width 0.3s;z-index:30}
-#uploadScreen{display:none;position:absolute;inset:0;background:#000;z-index:50;padding:20px;flex-direction:column}
+#feed{height:100vh;overflow-y:scroll;scroll-snap-type:y mandatory}
+.videoBox{height:100vh;position:relative;scroll-snap-align:start;background:#000;display:flex;align-items:center;justify-content:center}
+.videoBox video{height:100%;width:100%;object-fit:cover}
+.overlay{position:absolute;bottom:0;left:0;right:0;padding:15px;background:linear-gradient(transparent,rgba(0,0,0,0.9));display:flex;justify-content:space-between;align-items:flex-end}
+.left{width:75%}
+.user{font-weight:900;font-size:15px}
+.desc{font-size:13px;margin:5px 0;opacity:0.9}
+.music{font-size:11px;opacity:0.7}
+.right{display:flex;flex-direction:column;gap:18px;align-items:center}
+.iconBtn{width:48px;height:48px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;border:none;color:#fff;cursor:pointer}
+.iconBtn.liked{background:#fe2c55}
+.count{font-size:11px;font-weight:700;margin-top:-12px}
+.topBar{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;justify-content:space-between;padding:12px 15px;background:linear-gradient(rgba(0,0,0,0.8),transparent)}
+.topBar b{font-size:18px}
+.topBtn{background:#fff;color:#000;padding:6px 14px;border-radius:4px;font-weight:900;font-size:12px;border:none;cursor:pointer}
+#loginModal,#uploadModal,#profileModal{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:100;display:none;align-items:center;justify-content:center;padding:20px}
+.box{background:#121212;border-radius:16px;padding:20px;width:100%;max-width:340px;border:1px solid #222}
+.box h2{font-size:18px;margin-bottom:15px;text-align:center}
+.box input{width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#1e1e1e;color:#fff;margin-bottom:10px;outline:none}
+.box button{width:100%;padding:12px;background:#fe2c55;color:#fff;border:none;border-radius:8px;font-weight:900;cursor:pointer;margin-top:5px}
+.small{font-size:11px;text-align:center;margin-top:10px;color:#aaa}
+.bottomNav{position:fixed;bottom:0;left:0;right:0;background:#000;border-top:1px solid #222;display:flex;justify-content:space-around;padding:8px 0;z-index:20}
+.bottomNav div{text-align:center;font-size:10px;color:#888;cursor:pointer}
+.bottomNav div.active{color:#fff}
+.bottomNav div span{display:block;font-size:20px}
+#comments{position:absolute;bottom:70px;left:10px;right:70px;max-height:120px;overflow:auto}
+.cmt{font-size:11px;background:rgba(255,255,255,0.1);padding:5px 8px;border-radius:10px;margin-top:4px}
 </style>
 </head>
 <body>
-<div class="app">
-<div class="header">
-<div class="logo">TikTok <span>PRO</span></div>
-<div class="tabs"><div class="tab">Following</div><div class="tab active">For You</div></div>
-<div style="font-size:10px">Made by Faizan</div>
-</div>
-<div class="progress" id="progress"></div>
 
-<div class="feed" id="feed">
-<!-- Videos injected by JS -->
+<div class="topBar">
+<b>TikTok PRO 🇵🇰</b>
+<div>
+<button class="topBtn" onclick="openUpload()">+ Upload</button>
+<button class="topBtn" id="loginBtn" onclick="openLogin()" style="margin-left:6px">Login</button>
 </div>
+</div>
+
+<div id="feed"></div>
 
 <div class="bottomNav">
-<div class="navItem active"><div class="navIcon">🏠</div>Home</div>
-<div class="navItem"><div class="navIcon">🔍</div>Discover</div>
-<div class="navItem" onclick="openUpload()"><div class="uploadBtn">+</div></div>
-<div class="navItem"><div class="navIcon">💬</div>Inbox</div>
-<div class="navItem"><div class="navIcon">👤</div>Profile</div>
+<div class="active"><span>🏠</span>Home</div>
+<div onclick="document.getElementById('feed').scrollTop=0"><span>🔍</span>Discover</div>
+<div onclick="openUpload()"><span style="background:#fff;color:#000;padding:2px 10px;border-radius:6px">+</span></div>
+<div onclick="openProfile()"><span>👤</span>Profile</div>
 </div>
 
-<div id="uploadScreen">
-<h2 style="text-align:center;margin:20px 0">➕ Upload Video</h2>
-<div style="border:2px dashed #ffffff30;padding:30px;border-radius:12px;text-align:center" onclick="document.getElementById('fileInput').click()">
-<div style="font-size:40px">📹</div>
-<p style="font-size:13px;color:#aaa;margin-top:10px">Video select karo (MP4)<br>Ya Image select karo</p>
-<input type="file" id="fileInput" accept="video/*,image/*" multiple hidden>
+<!-- LOGIN -->
+<div id="loginModal">
+<div class="box">
+<h2>Login / Signup</h2>
+<input id="uName" placeholder="Username likho (jaise faizan123)">
+<input id="uPass" type="password" placeholder="Password">
+<button onclick="doLogin()">Login / Account Banao</button>
+<button onclick="closeLogin()" style="background:#333">Close</button>
+<div class="small">Bina login ke bhi video dekh sakte ho, login se upload hoga</div>
 </div>
-<div style="margin-top:15px">
-<input type="text" id="descInput" placeholder="Description likho... #fyp #viral" style="width:100%;padding:12px;border-radius:8px;border:1px solid #333;background:#111;color:#fff">
-<button onclick="postVideo()" style="width:100%;margin-top:10px;background:#fe2c55;color:#fff;border:none;padding:14px;border-radius:8px;font-weight:900">POST VIDEO 🔥</button>
-<button onclick="closeUpload()" style="width:100%;margin-top:8px;background:#222;color:#fff;border:none;padding:12px;border-radius:8px">CANCEL</button>
-</div>
-<p style="font-size:9px;color:#666;text-align:center;margin-top:10px">Videos sirf tumhare browser me save honge - Local TikTok!</p>
 </div>
 
+<!-- UPLOAD -->
+<div id="uploadModal">
+<div class="box">
+<h2>Video Upload Karo</h2>
+<input id="vDesc" placeholder="Caption likho... #fyp">
+<input type="file" id="vFile" accept="video/*" style="color:#fff">
+<button onclick="doUpload()">Upload TikTok</button>
+<button onclick="closeUpload()" style="background:#333">Cancel</button>
+<div class="small" id="upStatus"></div>
+</div>
 </div>
 
 <script>
-let videos = [
- {user:'@faizan_king', name:'Faizan', desc:'Meri pehli TikTok App! 🔥 #madeinpakistan #fyp #viral', song:'♫ Original Sound - Faizan', likes:12500, comments:890, shares:1200, avatar:'F', src:'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500'},
- {user:'@sialkot_star', name:'Mr Pattlo Fan', desc:'Sialkot ki mashoor jagah! 😍 #sialkot #punjab', song:'♫ Punjabi Song - Trending', likes:8900, comments:450, shares:600, avatar:'S', src:'https://images.unsplash.com/photo-1518837695005-2083093ee35c?w=500'},
- {user:'@gujranwala', name:'Gujranwala Boy', desc:'Gujranwala ka khana best! 🍗 #food #pakistan', song:'♫ Food Lover', likes:15600, comments:1200, shares:900, avatar:'G', src:'https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?w=500'},
- {user:'@pakistan_cricket', name:'Cricket Lover', desc:'Pakistan Zindabad! 🏏 #cricket #pakistan', song:'♫ Cricket Anthem', likes:23400, comments:2100, shares:1500, avatar:'P', src:'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=500'},
+let currentUser = localStorage.getItem('tikUser') || null;
+let videos = JSON.parse(localStorage.getItem('tikVideos') || 'null') || [
+{user:'@faizan_viral',desc:'G-Wagon Drift in Gujranwala 🔥 #fyp #pakistan',music:'Original Sound - Faizan',url:'https://www.w3schools.com/html/mov_bbb.mp4',likes:1240,comments:['Nice bro!','🔥🔥']},
+{user:'@kotmomin_official',desc:'Kot Momin ka Kinnow Bagh 🍊 #kotmomin',music:'Punjabi Song',url:'https://www.w3schools.com/html/movie.mp4',likes:892,comments:['MashaAllah']},
+{user:'@midh_ranjha',desc:'Heer Ranjha ka gaon ❤️ #midhranjha',music:'Heer - Atif Aslam',url:'https://www.w3schools.com/html/mov_bbb.mp4',likes:2100,comments:[]}
 ];
 
-let liked={};
-
-function renderFeed(){
+function render(){
  let feed=document.getElementById('feed');
  feed.innerHTML='';
  videos.forEach((v,i)=>{
-  let isLiked=liked[i];
-  let div=document.createElement('div');
-  div.className='videoCard';
-  // If video file (blob url) use video else image
-  let media = v.src.startsWith('blob:') || v.src.endsWith('.mp4') ? `<video src="${v.src}" loop autoplay muted playsinline onclick="this.muted=!this.muted"></video>` : `<img src="${v.src}" onclick="">`;
-  div.innerHTML=`
-   ${media}
+  feed.innerHTML+=`
+  <div class="videoBox">
+   <video src="${v.url}" loop autoplay muted playsinline onclick="this.paused?this.play():this.pause()"></video>
    <div class="overlay">
     <div class="left">
      <div class="user">${v.user}</div>
      <div class="desc">${v.desc}</div>
-     <div class="song">${v.song}</div>
+     <div class="music">🎵 ${v.music}</div>
+     <div id="comments-${i}">${v.comments.map(c=>`<div class=cmt>${c}</div>`).join('')}</div>
+     <div style="display:flex;gap:5px;margin-top:8px">
+      <input id="cInp-${i}" placeholder="Comment..." style="flex:1;padding:6px;border-radius:10px;border:none;background:rgba(255,255,255,0.15);color:#fff;font-size:11px">
+      <button onclick="addComment(${i})" style="padding:6px 10px;border-radius:10px;border:none;background:#fe2c55;color:#fff;font-size:11px">Send</button>
+     </div>
     </div>
     <div class="right">
-     <div class="action profileAdd">
-      <div class="circle" style="background:url('https://i.pravatar.cc/100?img=${i+10}');background-size:cover"></div>
-      <div class="addBtn">+</div>
-     </div>
-     <div class="action" onclick="likeVideo(${i}, this)">
-      <div class="circle" style="${isLiked?'background:#fe2c55;color:#fff;border-color:#fe2c55':''}">${isLiked?'❤️':'🤍'}</div>
-      <div class="count">${formatNum(v.likes + (isLiked?1:0))}</div>
-     </div>
-     <div class="action" onclick="alert('Comments: ${v.comments} - Feature jaldi ayega!')">
-      <div class="circle">💬</div>
-      <div class="count">${formatNum(v.comments)}</div>
-     </div>
-     <div class="action" onclick="shareVideo(${i})">
-      <div class="circle">↗️</div>
-      <div class="count">${formatNum(v.shares)}</div>
-     </div>
-     <div class="action">
-      <div class="circle" style="animation:spin 3s linear infinite">💿</div>
-     </div>
+     <button class="iconBtn" onclick="likeVideo(${i},this)">❤️</button><div class="count" id="like-${i}">${v.likes}</div>
+     <button class="iconBtn" onclick="document.getElementById('cInp-${i}').focus()">💬</button><div class="count">${v.comments.length}</div>
+     <button class="iconBtn" onclick="shareVideo(${i})">↗️</button>
+     <button class="iconBtn" onclick="followUser('${v.user}')">+</button>
     </div>
    </div>
-  `;
-  feed.appendChild(div);
+  </div>`;
  });
+ if(currentUser) document.getElementById('loginBtn').innerText=currentUser;
 }
 
-function formatNum(n){
- if(n>=1000) return (n/1000).toFixed(1)+'K';
- return n;
+function openLogin(){document.getElementById('loginModal').style.display='flex'}
+function closeLogin(){document.getElementById('loginModal').style.display='none'}
+function doLogin(){
+ let u=document.getElementById('uName').value.trim();
+ if(!u) return alert('Username likho');
+ localStorage.setItem('tikUser',u);
+ currentUser=u;
+ closeLogin();
+ render();
+ alert('Welcome '+u+'! Ab upload kar sakte ho');
 }
 
-function likeVideo(i, el){
- liked[i]=!liked[i];
- if(liked[i]) videos[i].likes++;
- else videos[i].likes--;
- renderFeed();
- // Heart animation
- let heart=document.createElement('div');
- heart.innerHTML='❤️';
- heart.style.position='absolute';
- heart.style.left='50%';
- heart.style.top='50%';
- heart.style.fontSize='80px';
- heart.style.transform='translate(-50%,-50%) scale(0)';
- heart.style.animation='heartPop 0.8s ease';
- heart.style.zIndex='10';
- document.getElementById('feed').children[i].appendChild(heart);
- setTimeout(()=>heart.remove(),800);
+function openUpload(){
+ if(!currentUser) return openLogin();
+ document.getElementById('uploadModal').style.display='flex'
+}
+function closeUpload(){document.getElementById('uploadModal').style.display='none'}
+
+function doUpload(){
+ let file=document.getElementById('vFile').files[0];
+ let desc=document.getElementById('vDesc').value || '#fyp';
+ if(!file) return alert('Video select karo');
+ document.getElementById('upStatus').innerText='Uploading...';
+ let reader=new FileReader();
+ reader.onload=function(e){
+  let url=e.target.result;
+  videos.unshift({user:'@'+currentUser,desc:desc,music:'Original - '+currentUser,url:url,likes:0,comments:[]});
+  localStorage.setItem('tikVideos',JSON.stringify(videos));
+  closeUpload();
+  render();
+  alert('Video Upload Hogayi! 🔥');
+ };
+ reader.readAsDataURL(file);
 }
 
+function likeVideo(i,btn){
+ videos[i].likes++;
+ document.getElementById('like-'+i).innerText=videos[i].likes;
+ btn.classList.add('liked');
+ localStorage.setItem('tikVideos',JSON.stringify(videos));
+}
+function addComment(i){
+ let inp=document.getElementById('cInp-'+i);
+ if(!inp.value.trim()) return;
+ videos[i].comments.push(currentUser ? currentUser+': '+inp.value : inp.value);
+ localStorage.setItem('tikVideos',JSON.stringify(videos));
+ render();
+}
 function shareVideo(i){
- if(navigator.share){
-  navigator.share({title:'TikTok PRO by Faizan', text:videos[i].desc, url:location.href});
- } else {
-  navigator.clipboard.writeText(location.href);
-  alert('Link Copied! ✅ Share karo WhatsApp pe!');
- }
+ if(navigator.share) navigator.share({title:'TikTok PRO',text:videos[i].desc,url:location.href});
+ else {navigator.clipboard.writeText(location.href); alert('Link Copy Hogaya!');}
 }
-
-function openUpload(){document.getElementById('uploadScreen').style.display='flex';}
-function closeUpload(){document.getElementById('uploadScreen').style.display='none';}
-
-let pendingFiles=[];
-document.getElementById('fileInput').addEventListener('change', e=>{
- pendingFiles=Array.from(e.target.files);
- alert(pendingFiles.length+' file selected! Ab description likh ke POST dabao');
-});
-
-function postVideo(){
- if(pendingFiles.length===0){alert('Pehle video/image select karo!');return;}
- let desc=document.getElementById('descInput').value || 'My new video 🔥 #fyp #viral #faizan';
- pendingFiles.forEach(file=>{
-  let url=URL.createObjectURL(file);
-  videos.unshift({user:'@faizan_official', name:'You', desc:desc, song:'♫ Original Sound - You', likes:0, comments:0, shares:0, avatar:'Y', src:url});
- });
- renderFeed();
- closeUpload();
- document.getElementById('descInput').value='';
- pendingFiles=[];
- alert('✅ Video Posted! Up swipe karo dekho!');
+function followUser(u){alert(u+' ko Follow kar liya! ✅')}
+function openProfile(){
+ if(!currentUser) return openLogin();
+ alert('Profile: '+currentUser+'\nVideos: '+videos.filter(v=>v.user.includes(currentUser)).length+'\nLikes: '+videos.reduce((s,v)=>s+v.likes,0));
 }
-
-// Auto play on scroll
-let feedEl=document.getElementById('feed');
-feedEl.addEventListener('scroll', ()=>{
- let cards=document.querySelectorAll('.videoCard video');
- cards.forEach(v=>{
-  let rect=v.getBoundingClientRect();
-  if(rect.top>=0 && rect.top<window.innerHeight/2) v.play();
-  else v.pause();
- });
-});
-
-renderFeed();
-
-// Style animations
-let style=document.createElement('style');
-style.innerHTML=`@keyframes heartPop{0%{transform:translate(-50%,-50%) scale(0)} 50%{transform:translate(-50%,-50%) scale(1.2)} 100%{transform:translate(-50%,-50%) scale(1);opacity:0}} @keyframes spin{from{transform:rotate(0)} to{transform:rotate(360deg)}}`;
-document.head.appendChild(style);
+render();
 </script>
 </body>
-  </html>
+</html>
