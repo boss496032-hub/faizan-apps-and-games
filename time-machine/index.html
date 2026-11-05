@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faizan Time Machine - Apne Future Se Milo!</title>
+<style>
+body{font-family:Arial,sans-serif;background:#0f0f2a;color:white;text-align:center;padding:15px;margin:0}
+h1{font-size:28px;background:linear-gradient(90deg,#ff00cc,#00ffff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.box{background:#1a1a3a;padding:20px;border-radius:20px;max-width:420px;margin:auto;box-shadow:0 0 20px #ff00cc}
+input,select{width:90%;padding:14px;margin:8px;border-radius:10px;border:none;font-size:16px}
+button{background:linear-gradient(90deg,#ff00cc,#00ffff);color:white;border:none;padding:15px 30px;border-radius:30px;font-size:18px;font-weight:bold;cursor:pointer;width:100%}
+#result{display:none;margin-top:20px;text-align:left;background:#22224a;padding:15px;border-radius:15px}
+#chat{margin-top:15px;background:#111133;padding:12px;border-radius:12px;text-align:left;max-height:220px;overflow-y:auto}
+.msg{margin:6px 0;padding:8px 12px;border-radius:12px;font-size:14px}
+.me{background:#007bff;text-align:right}
+.future{background:#333366}
+#chatInput{width:68%;padding:10px;border-radius:20px;border:none}
+#sendBtn{width:28%;padding:10px;border-radius:20px;background:#ff00cc;color:white;border:none;font-weight:bold}
+</style>
+</head>
+<body>
+<div class="box" id="startBox">
+<h1>🕰️ FAIZAN TIME MACHINE</h1>
+<p>Apne Future Wale Khud Se Milo! Duniya Me Pehli Baar!</p>
+<input type="text" id="name" placeholder="Apna Naam Likho - Faizan">
+<input type="number" id="age" placeholder="Abhi Umar Kitni Hai? - 18">
+<select id="year">
+<option value="2030">2030 Me Jao</option>
+<option value="2040">2040 Me Jao</option>
+<option value="2050">2050 Me Jao</option>
+</select>
+<button onclick="travel()">🚀 TIME TRAVEL KARO!</button>
+<p style="font-size:12px;color:#aaa;">100% Free | 1 Lakh Log Pehle Hi Ja Chuke Hain!</p>
+</div>
+
+<div class="box" id="result">
+<h2 id="futureTitle" style="text-align:center;"></h2>
+<div style="text-align:center;font-size:70px;" id="futureEmoji">🧑‍🚀</div>
+<p><b>🏠 Ghar:</b> <span id="fHome"></span></p>
+<p><b>🚗 Gari:</b> <span id="fCar"></span></p>
+<p><b>💼 Kaam:</b> <span id="fJob"></span></p>
+<p><b>💰 Paisa:</b> <span id="fMoney"></span></p>
+<p><b>❤️ Shadi:</b> <span id="fLove"></span></p>
+<h3 style="text-align:center;">💬 Future Wale Tum Se Baat Karna Chahte Hain!</h3>
+<div id="chat"></div>
+<div style="display:flex;gap:5px;margin-top:10px;">
+<input type="text" id="chatInput" placeholder="Future se pocho...">
+<button id="sendBtn" onclick="sendMsg()">Bhejo</button>
+</div>
+<button onclick="location.reload()" style="margin-top:15px;background:#555;">🔄 Dobara Travel Karo</button>
+</div>
+
+<script>
+let userName="", userYear="";
+function travel(){
+ userName=document.getElementById('name').value || "Faizan";
+ let age=document.getElementById('age').value || 18;
+ userYear=document.getElementById('year').value;
+ let homes=["Dubai Me Apna Bangla","Pakistan Me 1 Kanal Ka Ghar","Chand Pe Apna Ghar!","Lahore Me Bari Kothi","New York Me Flat"];
+ let cars=["Lamborghini Urus","Tesla Cybertruck","Urne Wali Gari (Flying Car)","BMW M5","Apna Private Jet"];
+ let jobs=["YouTube Ka Sab Se Bara Star","Apni Company Ka Malik","Famous Game Banane Wala","Dubai Ka Bara Businessman","Film Star"];
+ let moneys=["Har Mahine 50 Lakh Kamate Ho","Tum Crorepati Ho!","Tumhare Paas 10 Crore Hain","Tum Duniya Ke Top 100 Ameer Me Ho"];
+ let loves=["Tumhari Shadi Ho Gayi Hai, 2 Bache Hain","Tum Abhi Bhi Single Ho, Maza Kar Rahe Ho","Tumne Apni Pasand Se Shadi Ki Hai"];
+ let r=(s)=>s[Math.floor(Math.random()*s.length)];
+ document.getElementById('startBox').style.display='none';
+ document.getElementById('result').style.display='block';
+ document.getElementById('futureTitle').innerText="Tum "+userYear+" Me - "+userName;
+ document.getElementById('fHome').innerText=r(homes);
+ document.getElementById('fCar').innerText=r(cars);
+ document.getElementById('fJob').innerText=r(jobs);
+ document.getElementById('fMoney').innerText=r(moneys);
+ document.getElementById('fLove').innerText=r(loves);
+ addMsg("future","Assalam-o-Alaikum! Main tumhara Future wala "+userName+" hun "+userYear+" se! Mujhse kuch bhi pocho!");
+}
+function addMsg(who,txt){
+ let d=document.createElement('div'); d.className='msg '+(who=='me'?'me':'future'); d.innerText=txt;
+ document.getElementById('chat').appendChild(d);
+ document.getElementById('chat').scrollTop=9999;
+}
+function sendMsg(){
+ let inp=document.getElementById('chatInput'); if(!inp.value) return;
+ addMsg('me',inp.value);
+ let q=inp.value.toLowerCase(); inp.value='';
+ setTimeout(()=>{
+  let ans="";
+  if(q.includes('paisa')||q.includes('ameer')||q.includes('kaam')) ans="Bhai mehnat karte raho, "+userYear+" me tum Crorepati ho! Faizan Apps wali mehnat rang layegi!";
+  else if(q.includes('shadi')||q.includes('love')||q.includes('mohabbat')) ans="Haha! Ye to secret hai! Lekin "+userYear+" me tum boht khush ho!";
+  else if(q.includes('gari')||q.includes('car')) ans="Mere paas ab Flying Car hai! Tum bas mehnat mat chorna!";
+  else if(q.includes('parhai')||q.includes('study')) ans="Parhai mat chorna, isi se tum aage jaoge!";
+  else ans="Mujhe tum pe fakhar hai! Tumne haar nahi mani, isliye "+userYear+" me tum kamyab ho!";
+  addMsg('future',ans);
+ },800);
+}
+</script>
+</body>
+</html>
